@@ -7,7 +7,9 @@
     "agent-context-kit": "./dist/cli.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "doc/guide",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsc",

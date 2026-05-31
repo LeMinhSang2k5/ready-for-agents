@@ -20,12 +20,21 @@ function stackLinesForAgents(stack: ProjectContext["stack"]): string {
 }
 
 export function generateAgentsMd(ctx: ProjectContext): string {
-  const pm = packageManagerLabel(
-    ctx.packageManager,
-    ctx.packageManagerSource,
-  );
+  const pm = packageManagerLabel(ctx.packageManager, ctx.packageManagerSource);
   const projectKind = stackFrameworkDisplay(ctx.stack);
   const folderBlock = formatFolderBullets(ctx.folders);
+  const importantRules = [
+    "- Do not guess package manager or scripts; use values from `package.json` and `COMMANDS.md`.",
+    "- Match existing code style and patterns in the repo.",
+    "- Do not edit lockfiles unless the task explicitly requires dependency updates.",
+    "- Avoid scanning or modifying `node_modules`, `.git`, `dist`, `build`, `.next`, and `coverage`.",
+  ];
+
+  if (hasReadme(ctx.cwd)) {
+    importantRules.push(
+      "- Check `README.md` for human-oriented setup and product notes.",
+    );
+  }
 
   return `# AGENTS.md
 
@@ -46,11 +55,7 @@ ${folderBlock}
 
 ## Important Rules
 
-- Do not guess package manager or scripts; use values from \`package.json\` and \`COMMANDS.md\`.
-- Match existing code style and patterns in the repo.
-- Do not edit lockfiles unless the task explicitly requires dependency updates.
-- Avoid scanning or modifying \`node_modules\`, \`.git\`, \`dist\`, \`build\`, \`.next\`, and \`coverage\`.
-${hasReadme(ctx.cwd) ? "- Check `README.md` for human-oriented setup and product notes." : ""}
+${importantRules.join("\n")}
 
 ## Files To Avoid Editing
 

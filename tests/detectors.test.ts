@@ -5,10 +5,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { afterEach, describe, expect, it } from "vitest";
 import { detectImportantFolders } from "../src/detectors/folders.js";
 import { detectPackageManager } from "../src/detectors/package-manager.js";
-import {
-  detectStack,
-  stackFrameworkSummary,
-} from "../src/detectors/stack.js";
+import { detectStack, stackFrameworkSummary } from "../src/detectors/stack.js";
 import {
   findRelatedScripts,
   formatScriptListForTerminal,
@@ -247,9 +244,7 @@ describe("generateAllFiles", () => {
     expect(files["AGENTS.md"]).toContain("## Project Goal");
     expect(files["AGENTS.md"]).toContain("Framework: **React/Vite + Express**");
     expect(files["AGENTS.md"]).toContain("Database: **MongoDB/Mongoose**");
-    expect(files["AGENTS.md"]).toMatch(
-      /### Important Folders\n\n- `src\/`/,
-    );
+    expect(files["AGENTS.md"]).toMatch(/### Important Folders\n\n- `src\/`/);
     expect(files["COMMANDS.md"]).toMatch(
       /```\n\n## Related Development Scripts/,
     );

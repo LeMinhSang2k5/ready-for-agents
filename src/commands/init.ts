@@ -61,15 +61,23 @@ export async function runInit(options: InitOptions): Promise<number> {
     return 0;
   }
 
-  const { created, overwritten, skipped } = writeGeneratedFiles(ctx.cwd, files, {
-    force,
-  });
+  const { created, overwritten, skipped } = writeGeneratedFiles(
+    ctx.cwd,
+    files,
+    {
+      force,
+    },
+  );
 
   printResultLines(created, formatCreatedLines, pc.green);
   printResultLines(overwritten, formatOverwrittenLines, pc.magenta);
   printResultLines(skipped, formatSkippedLines, pc.yellow);
 
-  if (created.length === 0 && overwritten.length === 0 && skipped.length === 0) {
+  if (
+    created.length === 0 &&
+    overwritten.length === 0 &&
+    skipped.length === 0
+  ) {
     console.log(pc.dim("No output files written."));
   }
 
@@ -77,8 +85,8 @@ export async function runInit(options: InitOptions): Promise<number> {
 }
 
 function printResultLines(
-  files: typeof OUTPUT_FILES[number][],
-  formatter: (files: typeof OUTPUT_FILES[number][]) => string[],
+  files: (typeof OUTPUT_FILES)[number][],
+  formatter: (files: (typeof OUTPUT_FILES)[number][]) => string[],
   color: (text: string) => string,
 ): void {
   for (const line of formatter(files)) {
@@ -96,7 +104,10 @@ function printDryRunPreview(
   files: GeneratedFiles,
   force: boolean,
 ): void {
-  const { wouldCreate, wouldOverwrite, wouldSkip } = planWriteActions(cwd, force);
+  const { wouldCreate, wouldOverwrite, wouldSkip } = planWriteActions(
+    cwd,
+    force,
+  );
 
   printResultLines(wouldCreate, formatWouldCreateLines, pc.cyan);
   if (wouldCreate.length > 0) {
@@ -113,9 +124,13 @@ function printDryRunPreview(
     console.log();
   }
 
-  for (const name of OUTPUT_FILES) {
-    console.log(pc.dim(`── ${name} ${"─".repeat(Math.max(0, 44 - name.length))}`));
-    console.log(files[name]);
-    console.log();
-  }
+  OUTPUT_FILES.forEach((name, index) => {
+    console.log(
+      pc.dim(`── ${name} ${"─".repeat(Math.max(0, 44 - name.length))}`),
+    );
+    console.log(files[name].trimEnd());
+    if (index < OUTPUT_FILES.length - 1) {
+      console.log();
+    }
+  });
 }

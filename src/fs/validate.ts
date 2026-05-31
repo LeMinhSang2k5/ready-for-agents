@@ -43,7 +43,9 @@ export function validatePackageJsonFile(cwd: string): string | null {
 export function parsePackageJsonRaw(
   raw: string,
   packageJsonPath: string,
-): { ok: true; data: Record<string, unknown> } | { ok: false; error: PackageJsonReadError } {
+):
+  | { ok: true; data: Record<string, unknown> }
+  | { ok: false; error: PackageJsonReadError } {
   try {
     const data = JSON.parse(raw) as unknown;
     if (typeof data !== "object" || data === null || Array.isArray(data)) {

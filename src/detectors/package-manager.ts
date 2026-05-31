@@ -62,8 +62,6 @@ export function resolvePackageManager(
 }
 
 /** @deprecated Use detectPackageManagerFromLockfile */
-export function detectPackageManager(
-  cwd: string,
-): PackageManager | undefined {
+export function detectPackageManager(cwd: string): PackageManager | undefined {
   return detectPackageManagerFromLockfile(cwd);
 }

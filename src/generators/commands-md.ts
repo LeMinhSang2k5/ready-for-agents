@@ -1,4 +1,3 @@
-import { packageManagerLabel } from "../detectors/labels.js";
 import {
   findRelatedScripts,
   pickCommonScripts,
@@ -50,10 +49,10 @@ ${runCmd}
 }
 
 export function generateCommandsMd(ctx: ProjectContext): string {
-  const pmNote =
+  const setupLabel =
     ctx.packageManagerSource === "fallback"
-      ? " (no lockfile or packageManager field)"
-      : "";
+      ? "Install dependencies:"
+      : `Install dependencies (${ctx.packageManager}):`;
 
   const body = `# COMMANDS.md
 
@@ -61,7 +60,7 @@ Common commands for **${ctx.name}**. Values are taken from \`package.json\` scri
 
 ## Setup
 
-Install dependencies (${packageManagerLabel(ctx.packageManager, ctx.packageManagerSource)}${pmNote}):
+${setupLabel}
 
 ${installBlock(ctx.packageManager)}
 

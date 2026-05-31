@@ -52,7 +52,10 @@ function pickLayer(all: Deps, rules: StackRule[]): StackLayer | undefined {
   return undefined;
 }
 
-export function detectStack(dependencies: Deps, devDependencies: Deps): ProjectStack {
+export function detectStack(
+  dependencies: Deps,
+  devDependencies: Deps,
+): ProjectStack {
   const all = { ...dependencies, ...devDependencies };
   const stack: ProjectStack = {};
 
@@ -67,7 +70,9 @@ export function detectStack(dependencies: Deps, devDependencies: Deps): ProjectS
   return stack;
 }
 
-export function stackLayerLabel(layer: StackLayer | undefined): string | undefined {
+export function stackLayerLabel(
+  layer: StackLayer | undefined,
+): string | undefined {
   return layer?.label;
 }
 

@@ -1,4 +1,8 @@
-import type { PackageManager, PackageManagerSource, ProjectStack } from "../types.js";
+import type {
+  PackageManager,
+  PackageManagerSource,
+  ProjectStack,
+} from "../types.js";
 import {
   isStackEmpty,
   stackDatabaseSummary,

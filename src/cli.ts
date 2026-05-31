@@ -4,13 +4,16 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { runInit } from "./commands/init.js";
+import { runDoctor } from "./commands/doctor.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 function getVersion(): string {
   try {
     const pkgPath = join(__dirname, "..", "package.json");
-    const pkg = JSON.parse(readFileSync(pkgPath, "utf-8")) as { version?: string };
+    const pkg = JSON.parse(readFileSync(pkgPath, "utf-8")) as {
+      version?: string;
+    };
     return pkg.version ?? "0.0.0";
   } catch {
     return "0.0.0";
@@ -26,7 +29,9 @@ program
 
 program
   .command("init")
-  .description("Scan the project and generate AGENTS.md, PROJECT_CONTEXT.md, COMMANDS.md")
+  .description(
+    "Scan the project and generate AGENTS.md, PROJECT_CONTEXT.md, COMMANDS.md",
+  )
   .option("--dry-run", "Preview generated content without writing files")
   .option("--force", "Overwrite existing context files")
   .option("--cwd <path>", "Project directory to scan", process.cwd())
@@ -36,6 +41,16 @@ program
       force: opts.force,
       cwd: opts.cwd,
     });
+    process.exit(code);
+  });
+
+program
+  .command("doctor")
+  .description("Check if the repository is AI-agent-ready")
+  .option("--cwd <path>", "Project directory to check", process.cwd())
+  .option("--json", "Print machine-readable JSON output for CI")
+  .action(async (opts: { cwd: string; json?: boolean }) => {
+    const code = await runDoctor({ cwd: opts.cwd, json: opts.json });
     process.exit(code);
   });
 

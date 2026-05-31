@@ -1,4 +1,12 @@
 export { runInit } from "./commands/init.js";
+export { runDoctor } from "./commands/doctor.js";
+export { runDoctorChecks } from "./doctor/checks.js";
+export { formatScore, hasCriticalFailure } from "./doctor/score.js";
+export type {
+  DoctorCheck,
+  DoctorCheckStatus,
+  DoctorResult,
+} from "./doctor/checks.js";
 export {
   packageManagerLabel,
   stackDatabaseDisplay,

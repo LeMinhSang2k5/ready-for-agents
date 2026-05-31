@@ -16,7 +16,11 @@ export function getExistingOutputFiles(cwd: string): OutputFile[] {
 export function planWriteActions(
   cwd: string,
   force: boolean,
-): { wouldCreate: OutputFile[]; wouldOverwrite: OutputFile[]; wouldSkip: OutputFile[] } {
+): {
+  wouldCreate: OutputFile[];
+  wouldOverwrite: OutputFile[];
+  wouldSkip: OutputFile[];
+} {
   const existing = getExistingOutputFiles(cwd);
   const wouldCreate: OutputFile[] = [];
   const wouldOverwrite: OutputFile[] = [];

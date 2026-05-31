@@ -31,9 +31,9 @@ export function resolveProjectCwd(cwd?: string): string {
   return resolve(cwd ?? process.cwd());
 }
 
-function readPackageJson(cwd: string):
-  | { ok: true; pkg: ParsedPackageJson }
-  | { ok: false; error: string } {
+function readPackageJson(
+  cwd: string,
+): { ok: true; pkg: ParsedPackageJson } | { ok: false; error: string } {
   const missingError = validatePackageJsonFile(cwd);
   if (missingError) {
     return { ok: false, error: missingError };

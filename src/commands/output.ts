@@ -43,9 +43,7 @@ export function formatSkippedLines(files: OutputFile[]): string[] {
   }
   return [
     "Skipped:",
-    ...files.map(
-      (f) => `- ${f} already exists. Use --force to overwrite.`,
-    ),
+    ...files.map((f) => `- ${f} already exists. Use --force to overwrite.`),
   ];
 }
 

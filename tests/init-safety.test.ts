@@ -57,10 +57,7 @@ const DEFAULT_PACKAGE = {
   dependencies: { next: "15.0.0", react: "19.0.0" },
 };
 
-function makeProject(
-  name: string,
-  extra: Record<string, string> = {},
-): string {
+function makeProject(name: string, extra: Record<string, string> = {}): string {
   const dir = mkdtempSync(join(tmpdir(), `ack-init-${name}-`));
   tempDirs.push(dir);
   const base: Record<string, string> = {
