@@ -1,6 +1,77 @@
+# Dependencies
 node_modules/
+.pnpm-store/
+
+# Build output (regenerate: pnpm run build)
 dist/
-*.log
-.DS_Store
+build/
+*.tsbuildinfo
+
+# Test & coverage
 coverage/
+.nyc_output/
+vitest.config.ts.timestamp-*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editors & IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Cursor / local agent state (keep repo rules in doc/ or .cursor/rules if added later)
+.cursor/
+
+# Package manager artifacts
+*.tgz
+.npm/
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+package-lock.json
+yarn.lock
+bun.lock
+bun.lockb
+
+# Note: this repo uses pnpm — commit pnpm-lock.yaml only
+
+# Misc cache
+.cache/
+.turbo/
+.eslintcache
+.prettiercache
+*.pid
+*.seed
+*.pid.lock
+
+# Draft docs (not published specs — see doc/guide/)
 doc/ideas/
