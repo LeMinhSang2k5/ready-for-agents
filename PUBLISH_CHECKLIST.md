@@ -126,6 +126,26 @@ npm publish --access public
 
 ---
 
+## 7b. Trusted Publisher (GitHub Actions → npm, khuyến nghị)
+
+Workflow: [`.github/workflows/publish.yml`](./.github/workflows/publish.yml)
+
+**Thứ tự:**
+
+1. Push workflow lên `main` (file phải tồn tại trước)
+2. npm → package **ready-for-agents** → **Settings** → **Trusted Publisher** → **GitHub Actions**
+   - User: `LeMinhSang2k5`
+   - Repository: `ready-for-agents`
+   - Workflow filename: `publish.yml`
+   - Allowed actions: **Publish**
+3. Release: bump `package.json` + `CHANGELOG.md` → tag `vX.Y.Z` → `git push origin vX.Y.Z`
+
+Action chạy: `pnpm typecheck` → `test` → `build` → `pnpm publish --provenance` (không cần `NPM_TOKEN`).
+
+Hoặc: **Actions** → **Publish to npm** → **Run workflow** (`workflow_dispatch`).
+
+---
+
 ## 8. Sau publish
 
 - [ ] GitHub Release notes (copy từ CHANGELOG)

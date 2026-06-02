@@ -1,0 +1,37 @@
+# Publish to npm via OIDC (Trusted Publisher).
+# Setup: npm package → Settings → Trusted Publisher → GitHub Actions
+#   user: LeMinhSang2k5, repo: ready-for-agents, workflow: publish.yml
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "pnpm"
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+
+      - run: pnpm publish --access public --no-git-checks --provenance
