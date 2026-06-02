@@ -38,7 +38,7 @@ Không gọi `resolvePackageManager`, không `existsSync` context files.
 
 ## Alternatives considered
 
-| Phương án | Lý do loại |
-|-----------|------------|
-| Chạy hết check, fail tất cả | Noise, khó debug |
+| Phương án                       | Lý do loại                                  |
+| ------------------------------- | ------------------------------------------- |
+| Chạy hết check, fail tất cả     | Noise, khó debug                            |
 | Chỉ in stderr, không check line | Không có score / không thống nhất doctor UX |

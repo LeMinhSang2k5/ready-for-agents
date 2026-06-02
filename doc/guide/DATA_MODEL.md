@@ -39,13 +39,13 @@ Object trung tâm sau khi quét project (lệnh `init`).
 
 ```ts
 type ProjectContext = {
-  cwd: string;                              // absolute path
-  name: string;                             // package.json name
-  packageManager: PackageManager;           // npm | pnpm | yarn | bun
+  cwd: string; // absolute path
+  name: string; // package.json name
+  packageManager: PackageManager; // npm | pnpm | yarn | bun
   packageManagerSource: PackageManagerSource; // lockfile | package.json | fallback
   stack: ProjectStack;
-  scripts: Record<string, string>;         // raw package.json scripts
-  folders: string[];                        // subset of IMPORTANT_FOLDERS
+  scripts: Record<string, string>; // raw package.json scripts
+  folders: string[]; // subset of IMPORTANT_FOLDERS
   dependencies: Record<string, string>;
   devDependencies: Record<string, string>;
 };
@@ -61,8 +61,8 @@ type ProjectContext = {
 
 ```ts
 type StackLayer = {
-  label: string;      // e.g. "React/Vite"
-  source: string[];   // e.g. ["vite", "react"]
+  label: string; // e.g. "React/Vite"
+  source: string[]; // e.g. ["vite", "react"]
 };
 
 type ProjectStack = {
@@ -81,8 +81,7 @@ type ProjectStack = {
 ## 4. Scripts (logical keys)
 
 ```ts
-type ScriptKey =
-  | "dev" | "build" | "test" | "lint" | "typecheck" | "format";
+type ScriptKey = "dev" | "build" | "test" | "lint" | "typecheck" | "format";
 
 const SCRIPT_KEYS: ScriptKey[]; // thứ tự cố định
 ```
@@ -100,13 +99,40 @@ type GeneratedFiles = {
   "AGENTS.md": string;
   "PROJECT_CONTEXT.md": string;
   "COMMANDS.md": string;
+  ".cursor/rules/agent-context-kit.mdc"?: string;
+  "CLAUDE.md"?: string;
 };
 
-const OUTPUT_FILES = ["AGENTS.md", "PROJECT_CONTEXT.md", "COMMANDS.md"] as const;
+const OUTPUT_FILES = [
+  "AGENTS.md",
+  "PROJECT_CONTEXT.md",
+  "COMMANDS.md",
+  ".cursor/rules/agent-context-kit.mdc",
+  "CLAUDE.md",
+] as const;
 type OutputFile = (typeof OUTPUT_FILES)[number];
 ```
 
 **Sinh bởi:** `generateAllFiles(ctx)` — `generators/index.ts`.
+Optional files are included when `init --cursor`, `init --claude`, or `init --all` is used.
+
+Mỗi string có generated marker ở cuối file:
+
+```ts
+type GeneratedMarker = {
+  file: OutputFile;
+  hash: string; // first 16 hex chars of sha256(strippedContent)
+};
+```
+
+Marker được xử lý bởi `generators/marker.ts`:
+
+- `withGeneratedMarker(file, content)`
+- `stripGeneratedMarker(content)`
+- `readGeneratedMarker(content)`
+- `hasGeneratedMarker(content, file)`
+
+`hasGeneratedMarker` chỉ `true` khi marker tồn tại, `file` khớp output path, và `hash` khớp body hiện tại. Nếu user sửa body nhưng để nguyên marker cũ, file sẽ bị xem là `untracked`.
 
 **Ghi bởi:** `writeGeneratedFiles(cwd, files, { force })` → `WriteResult`:
 
@@ -119,6 +145,29 @@ type WriteResult = {
 ```
 
 **Dry-run:** `planWriteActions(cwd, force)` — không tạo `GeneratedFiles` trên disk.
+
+### Update check model
+
+`commands/update.ts` phân loại selected files bằng marker hợp lệ:
+
+```ts
+type UpdateCheckJsonOutput = {
+  cwd: string;
+  ok: boolean;
+  upToDate: OutputFile[];
+  outdated: OutputFile[];
+  missing: OutputFile[];
+  untracked: OutputFile[];
+};
+```
+
+`ok === true` khi `outdated`, `missing`, và `untracked` đều rỗng.
+
+Write mode của `update`:
+
+- Tạo file `missing`.
+- Overwrite file `outdated` nếu có marker đúng file.
+- Skip file `untracked` trừ khi có `--force`.
 
 ---
 
@@ -163,6 +212,40 @@ CLI map `DoctorResult` → object in `formatDoctorJson()` (`commands/doctor.ts`)
 
 Chi tiết FR: [REQUIREMENTS.md § FR-doctor-8](./REQUIREMENTS.md#fr-doctor-8--json-output).
 
+### Fix output (`doctor --fix`)
+
+`doctor --fix` dùng cùng marker/hash model với `update`:
+
+- Missing selected files → create.
+- Outdated generated files → overwrite.
+- Up-to-date generated files → leave unchanged.
+- Untracked files → skip unless `--force`.
+- Critical doctor failure → fix does not run.
+
+Khi có `--fix --json`, JSON doctor output có thêm `fix`:
+
+```ts
+type DoctorFixJsonOutput =
+  | { ran: false; ok: false; reason: "critical-failure" }
+  | {
+      ran: true;
+      mode: "dry-run";
+      ok: true;
+      upToDate: OutputFile[];
+      wouldGenerate: OutputFile[];
+      wouldOverwrite: OutputFile[];
+      wouldSkipUntracked: OutputFile[];
+    }
+  | {
+      ran: true;
+      mode: "write";
+      ok: boolean;
+      created: OutputFile[];
+      overwritten: OutputFile[];
+      skippedUntracked: OutputFile[];
+    };
+```
+
 ---
 
 ## 7. Package manager resolution
@@ -181,15 +264,54 @@ type ResolvedPackageManager = {
 
 ---
 
-## 8. Validation errors (init)
+## 8. `PromptBrief` (lệnh `prompt`)
+
+Nguồn truth: `src/prompt/types.ts`.
+
+```ts
+type PromptIntent =
+  | "explain"
+  | "review"
+  | "fix"
+  | "verify"
+  | "clarify"
+  | "general";
+
+type PromptTarget = "auto" | "en" | "vi";
+
+type PromptBrief = {
+  source: PromptSource;
+  target: PromptTarget;
+  original: string;
+  intent: PromptIntent;
+  task: string;
+  context: string[];
+  requirements: string[];
+  constraints: string[];
+  verify: string[];
+  unclear: string[];
+  response: string[];
+  stats: PromptStats;
+};
+```
+
+**Luồng:** `readPromptInput` → `normalize` → `segment` → `classify` → `extract` → `render`.
+
+**JSON CLI (`--json`):** `PromptJsonOutput` (có `target`, `intent`; không `source`, `original`, `stats`).
+
+Chi tiết: [PROMPT_SPEC.md](./PROMPT_SPEC.md).
+
+---
+
+## 9. Validation errors (init)
 
 `src/fs/validate.ts`:
 
-| Hàm | Dùng khi |
-|-----|----------|
-| `validateCwd(cwd)` | Directory tồn tại + là folder |
-| `validatePackageJsonFile(cwd)` | File package.json tồn tại |
-| `parsePackageJsonRaw(raw, path)` | Parse JSON + root object |
+| Hàm                              | Dùng khi                      |
+| -------------------------------- | ----------------------------- |
+| `validateCwd(cwd)`               | Directory tồn tại + là folder |
+| `validatePackageJsonFile(cwd)`   | File package.json tồn tại     |
+| `parsePackageJsonRaw(raw, path)` | Parse JSON + root object      |
 
 `validateInitTarget` (read-project) gộp các bước trên cho `init`.
 
@@ -197,23 +319,26 @@ type ResolvedPackageManager = {
 
 ---
 
-## 9. Public exports (`index.ts`)
+## 10. Public exports (`index.ts`)
 
-| Export | Module |
-|--------|--------|
-| `runInit` | `commands/init.js` |
-| `runDoctor` | `commands/doctor.js` |
-| `runDoctorChecks`, `formatScore`, `hasCriticalFailure` | `doctor/*` |
-| `readProject`, `resolveProjectCwd`, `validateInitTarget` | `fs/read-project.js` |
-| `generateAllFiles` | `generators/index.js` |
-| Detectors | `detectors/*` |
-| Types | `types.js` |
+| Export                                                           | Module                |
+| ---------------------------------------------------------------- | --------------------- |
+| `runInit`                                                        | `commands/init.js`    |
+| `runDoctor`, `DoctorOptions`                                     | `commands/doctor.js`  |
+| `runPrompt`, `buildPromptFromText`                               | `commands/prompt.js`  |
+| `runUpdate`, `checkGeneratedFiles`, `writeUpdateFiles`           | `commands/update.js`  |
+| `normalizePromptText`, `extractPromptBrief`, `renderPromptBrief` | `prompt/*`            |
+| `runDoctorChecks`, `formatScore`, `hasCriticalFailure`           | `doctor/*`            |
+| `readProject`, `resolveProjectCwd`, `validateInitTarget`         | `fs/read-project.js`  |
+| `generateAllFiles`                                               | `generators/index.js` |
+| Detectors                                                        | `detectors/*`         |
+| Types                                                            | `types.js`            |
 
 CLI không bắt buộc import `index.ts`; dùng `cli.ts` trực tiếp.
 
 ---
 
-## 10. Không lưu trữ
+## 11. Không lưu trữ
 
 - Không database / cache giữa lần chạy.
 - Không file config user (`~/.agent-context-kit`).

@@ -56,16 +56,17 @@ export type ProjectContext = {
   devDependencies: Record<string, string>;
 };
 
-export type GeneratedFiles = {
-  "AGENTS.md": string;
-  "PROJECT_CONTEXT.md": string;
-  "COMMANDS.md": string;
-};
-
 export const OUTPUT_FILES = [
   "AGENTS.md",
   "PROJECT_CONTEXT.md",
   "COMMANDS.md",
+  ".cursor/rules/agent-context-kit.mdc",
+  "CLAUDE.md",
 ] as const;
 
 export type OutputFile = (typeof OUTPUT_FILES)[number];
+
+export type GeneratedFiles = Partial<Record<OutputFile, string>> &
+  Record<"AGENTS.md" | "PROJECT_CONTEXT.md" | "COMMANDS.md", string>;
+
+export type GeneratePreset = "core" | "cursor" | "claude";

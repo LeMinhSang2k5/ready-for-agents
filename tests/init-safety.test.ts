@@ -173,6 +173,69 @@ describe("safe behavior", () => {
     expect(out).toContain("Dry run — no files written.");
   });
 
+  it("--dry-run with optional agent files writes no nested files", async () => {
+    const dir = makeProject("dry-optional");
+    const { output } = captureConsole();
+
+    const code = await runInit({
+      cwd: dir,
+      dryRun: true,
+      cursor: true,
+      claude: true,
+    });
+
+    expect(code).toBe(0);
+    expect(existsSync(join(dir, ".cursor/rules/agent-context-kit.mdc"))).toBe(
+      false,
+    );
+    expect(existsSync(join(dir, "CLAUDE.md"))).toBe(false);
+
+    const out = output();
+    expect(out).toContain(".cursor/rules/agent-context-kit.mdc");
+    expect(out).toContain("CLAUDE.md");
+  });
+
+  it("generates optional Cursor and Claude files when requested", async () => {
+    const dir = makeProject("optional");
+
+    const code = await runInit({ cwd: dir, cursor: true, claude: true });
+
+    expect(code).toBe(0);
+    expect(
+      readFileSync(join(dir, ".cursor/rules/agent-context-kit.mdc"), "utf-8"),
+    ).toContain("alwaysApply: true");
+    expect(readFileSync(join(dir, "CLAUDE.md"), "utf-8")).toContain(
+      "# CLAUDE.md",
+    );
+  });
+
+  it("--all generates all optional agent files", async () => {
+    const dir = makeProject("all");
+
+    const code = await runInit({ cwd: dir, all: true });
+
+    expect(code).toBe(0);
+    expect(existsSync(join(dir, ".cursor/rules/agent-context-kit.mdc"))).toBe(
+      true,
+    );
+    expect(existsSync(join(dir, "CLAUDE.md"))).toBe(true);
+  });
+
+  it("does not overwrite optional files without --force", async () => {
+    const dir = makeProject("optional-no-force", {
+      ".cursor/rules/agent-context-kit.mdc": "KEEP_CURSOR",
+      "CLAUDE.md": "KEEP_CLAUDE",
+    });
+
+    const code = await runInit({ cwd: dir, cursor: true, claude: true });
+
+    expect(code).toBe(0);
+    expect(
+      readFileSync(join(dir, ".cursor/rules/agent-context-kit.mdc"), "utf-8"),
+    ).toBe("KEEP_CURSOR");
+    expect(readFileSync(join(dir, "CLAUDE.md"), "utf-8")).toBe("KEEP_CLAUDE");
+  });
+
   it("never treats ignored dirs as important folders", () => {
     for (const name of IGNORED_SCAN_DIRS) {
       expect(isIgnoredDirectory(name)).toBe(true);

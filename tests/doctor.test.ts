@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import { mkdtempSync, rmSync } from "node:fs";
@@ -279,5 +279,113 @@ describe("runDoctor --json", () => {
     expect(parsed.score).toEqual({ passed: 0, warned: 0, failed: 1, total: 1 });
     expect(parsed.checks[0]?.label).toBe("Project directory found");
     expect(parsed.checks[0]?.detail).toContain("does not exist");
+  });
+});
+
+describe("runDoctor --fix", () => {
+  it("creates missing generated context files", async () => {
+    const dir = makeFixture("fix-missing", {
+      "package.json": JSON.stringify({
+        name: "fix-app",
+        scripts: { dev: "vite", build: "tsc", test: "vitest" },
+      }),
+      "pnpm-lock.yaml": "",
+      "README.md": "# Hi",
+    });
+
+    const code = await runDoctor({ cwd: dir, fix: true });
+
+    expect(code).toBe(0);
+    expect(readFileSync(join(dir, "AGENTS.md"), "utf-8")).toContain(
+      "agent-context-kit:generated",
+    );
+    expect(existsSync(join(dir, "PROJECT_CONTEXT.md"))).toBe(true);
+    expect(existsSync(join(dir, "COMMANDS.md"))).toBe(true);
+  });
+
+  it("previews fixes without writing files in dry-run mode", async () => {
+    const dir = makeFixture("fix-dry-run", {
+      "package.json": JSON.stringify({
+        name: "fix-app",
+        scripts: { dev: "vite", build: "tsc", test: "vitest" },
+      }),
+      "pnpm-lock.yaml": "",
+      "README.md": "# Hi",
+    });
+    const { output } = captureConsole();
+
+    const code = await runDoctor({ cwd: dir, fix: true, dryRun: true });
+
+    expect(code).toBe(0);
+    expect(existsSync(join(dir, "AGENTS.md"))).toBe(false);
+    expect(output()).toContain("Fix preview:");
+    expect(output()).toContain("Would generate:");
+    expect(output()).toContain("Dry run");
+  });
+
+  it("skips untracked context files by default", async () => {
+    const dir = makeFixture("fix-untracked", {
+      "package.json": JSON.stringify({
+        name: "fix-app",
+        scripts: { dev: "vite", build: "tsc", test: "vitest" },
+      }),
+      "pnpm-lock.yaml": "",
+      "README.md": "# Hi",
+      "AGENTS.md": "USER_AUTHORED",
+    });
+    const { output } = captureConsole();
+
+    const code = await runDoctor({ cwd: dir, fix: true });
+
+    expect(code).toBe(1);
+    expect(readFileSync(join(dir, "AGENTS.md"), "utf-8")).toBe("USER_AUTHORED");
+    expect(existsSync(join(dir, "PROJECT_CONTEXT.md"))).toBe(true);
+    expect(output()).toContain("Skipped untracked:");
+  });
+
+  it("prints combined machine-readable JSON", async () => {
+    const dir = makeFixture("fix-json", {
+      "package.json": JSON.stringify({
+        name: "fix-app",
+        scripts: { dev: "vite", build: "tsc", test: "vitest" },
+      }),
+      "pnpm-lock.yaml": "",
+      "README.md": "# Hi",
+    });
+    const { output } = captureConsole();
+
+    const code = await runDoctor({ cwd: dir, fix: true, json: true });
+    const parsed = JSON.parse(output()) as {
+      ok: boolean;
+      fix: {
+        ran: boolean;
+        mode: string;
+        ok: boolean;
+        created: string[];
+      };
+    };
+
+    expect(code).toBe(0);
+    expect(parsed.ok).toBe(true);
+    expect(parsed.fix).toMatchObject({
+      ran: true,
+      mode: "write",
+      ok: true,
+    });
+    expect(parsed.fix.created).toContain("AGENTS.md");
+    expect(output()).not.toContain("agent-context-kit doctor");
+  });
+
+  it("does not run fixes when doctor has a critical failure", async () => {
+    const dir = makeFixture("fix-critical", {
+      "README.md": "# Hi",
+    });
+    const { output } = captureConsole();
+
+    const code = await runDoctor({ cwd: dir, fix: true });
+
+    expect(code).toBe(1);
+    expect(existsSync(join(dir, "AGENTS.md"))).toBe(false);
+    expect(output()).toContain("Fix skipped because doctor found a critical");
   });
 });

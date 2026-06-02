@@ -1,5 +1,5 @@
-import { existsSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import type { GeneratedFiles, OutputFile } from "../types.js";
 import { OUTPUT_FILES } from "../types.js";
 
@@ -13,20 +13,26 @@ export function getExistingOutputFiles(cwd: string): OutputFile[] {
   return OUTPUT_FILES.filter((name) => existsSync(join(cwd, name)));
 }
 
+export function getGeneratedFileNames(files: GeneratedFiles): OutputFile[] {
+  return OUTPUT_FILES.filter((name) => files[name] !== undefined);
+}
+
 export function planWriteActions(
   cwd: string,
   force: boolean,
+  files?: GeneratedFiles,
 ): {
   wouldCreate: OutputFile[];
   wouldOverwrite: OutputFile[];
   wouldSkip: OutputFile[];
 } {
   const existing = getExistingOutputFiles(cwd);
+  const targets = files ? getGeneratedFileNames(files) : OUTPUT_FILES;
   const wouldCreate: OutputFile[] = [];
   const wouldOverwrite: OutputFile[] = [];
   const wouldSkip: OutputFile[] = [];
 
-  for (const name of OUTPUT_FILES) {
+  for (const name of targets) {
     if (!existing.includes(name)) {
       wouldCreate.push(name);
     } else if (force) {
@@ -50,9 +56,9 @@ export function writeGeneratedFiles(
     skipped: [],
   };
 
-  for (const name of OUTPUT_FILES) {
+  for (const name of getGeneratedFileNames(files)) {
     const targetPath = join(cwd, name);
-    const content = files[name];
+    const content = files[name]!;
     const existed = existsSync(targetPath);
 
     if (existed && !options.force) {
@@ -60,6 +66,7 @@ export function writeGeneratedFiles(
       continue;
     }
 
+    mkdirSync(dirname(targetPath), { recursive: true });
     writeFileSync(targetPath, content, "utf-8");
 
     if (existed) {

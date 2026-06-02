@@ -9,7 +9,12 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- (nothing yet)
+- `update --check` to verify generated context files without writing to disk
+- `update --json` machine-readable freshness output for CI
+- Generated file marker/hash support so `update` can skip user-authored files by default
+- `update --force` to intentionally overwrite untracked existing output files
+- `doctor --fix` to generate missing context files and refresh stale generated files safely
+- `doctor --fix --dry-run` and `doctor --fix --json` for preview and automation workflows
 
 ## [0.1.0] - 2026-06-01
 

@@ -9,3 +9,7 @@ export function formatBulletList(items: string[]): string {
 export function formatFolderBullets(folders: string[]): string {
   return formatBulletList(folders.map((f) => `\`${f}/\``));
 }
+
+export function oneTrailingNewline(content: string): string {
+  return content.replace(/\s+$/g, "") + "\n";
+}

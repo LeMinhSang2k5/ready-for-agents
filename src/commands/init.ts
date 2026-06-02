@@ -6,7 +6,7 @@ import {
   validateInitTarget,
 } from "../fs/read-project.js";
 import { planWriteActions, writeGeneratedFiles } from "../fs/write-files.js";
-import type { GeneratedFiles } from "../types.js";
+import type { GeneratedFiles, GeneratePreset, OutputFile } from "../types.js";
 import { OUTPUT_FILES } from "../types.js";
 import {
   formatCreatedLines,
@@ -23,6 +23,9 @@ export type InitOptions = {
   dryRun?: boolean;
   force?: boolean;
   cwd?: string;
+  cursor?: boolean;
+  claude?: boolean;
+  all?: boolean;
 };
 
 /**
@@ -44,7 +47,8 @@ export async function runInit(options: InitOptions): Promise<number> {
 
   const cwd = resolveProjectCwd(options.cwd);
   const ctx = readProject(cwd);
-  const files = generateAllFiles(ctx);
+  const presets = resolveGeneratePresets(options);
+  const files = generateAllFiles(ctx, presets);
   const force = options.force ?? false;
 
   printHeader();
@@ -85,8 +89,8 @@ export async function runInit(options: InitOptions): Promise<number> {
 }
 
 function printResultLines(
-  files: (typeof OUTPUT_FILES)[number][],
-  formatter: (files: (typeof OUTPUT_FILES)[number][]) => string[],
+  files: OutputFile[],
+  formatter: (files: OutputFile[]) => string[],
   color: (text: string) => string,
 ): void {
   for (const line of formatter(files)) {
@@ -107,6 +111,7 @@ function printDryRunPreview(
   const { wouldCreate, wouldOverwrite, wouldSkip } = planWriteActions(
     cwd,
     force,
+    files,
   );
 
   printResultLines(wouldCreate, formatWouldCreateLines, pc.cyan);
@@ -124,13 +129,23 @@ function printDryRunPreview(
     console.log();
   }
 
-  OUTPUT_FILES.forEach((name, index) => {
+  const generatedNames = OUTPUT_FILES.filter(
+    (name) => files[name] !== undefined,
+  );
+  generatedNames.forEach((name, index) => {
     console.log(
       pc.dim(`── ${name} ${"─".repeat(Math.max(0, 44 - name.length))}`),
     );
-    console.log(files[name].trimEnd());
-    if (index < OUTPUT_FILES.length - 1) {
+    console.log(files[name]!.trimEnd());
+    if (index < generatedNames.length - 1) {
       console.log();
     }
   });
+}
+
+function resolveGeneratePresets(options: InitOptions): GeneratePreset[] {
+  const presets: GeneratePreset[] = ["core"];
+  if (options.all || options.cursor) presets.push("cursor");
+  if (options.all || options.claude) presets.push("claude");
+  return presets;
 }

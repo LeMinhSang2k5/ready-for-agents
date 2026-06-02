@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { afterEach, describe, expect, it } from "vitest";
 import { readProject } from "../src/fs/read-project.js";
 import { generateAllFiles } from "../src/generators/index.js";
-import { OUTPUT_FILES } from "../src/types.js";
+import type { OutputFile } from "../src/types.js";
 
 const tempDirs: string[] = [];
 
@@ -88,8 +88,8 @@ describe("generateAllFiles formatting", () => {
     });
     const files = generateAllFiles(readProject(dir));
 
-    for (const name of OUTPUT_FILES) {
-      const content = files[name];
+    for (const name of Object.keys(files) as OutputFile[]) {
+      const content = files[name]!;
       expect(content.endsWith("\n"), `${name} should end with newline`).toBe(
         true,
       );
@@ -98,5 +98,26 @@ describe("generateAllFiles formatting", () => {
         `${name} should not end with double newline`,
       ).toBe(false);
     }
+  });
+
+  it("can generate Cursor rules and CLAUDE.md on demand", () => {
+    const dir = makeProjectDir("agent-native", standardPkg, {
+      "pnpm-lock.yaml": "",
+      "README.md": "# Hi",
+    });
+    const files = generateAllFiles(readProject(dir), [
+      "core",
+      "cursor",
+      "claude",
+    ]);
+
+    expect(files[".cursor/rules/agent-context-kit.mdc"]).toContain(
+      "alwaysApply: true",
+    );
+    expect(files[".cursor/rules/agent-context-kit.mdc"]).toContain(
+      "Read `AGENTS.md`",
+    );
+    expect(files["CLAUDE.md"]).toContain("# CLAUDE.md");
+    expect(files["CLAUDE.md"]).toContain("Response Expectations");
   });
 });

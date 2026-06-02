@@ -16,13 +16,13 @@ lockfile (first match) → package.json "packageManager" → npm (fallback)
 
 ### 1.2 Lockfile scan order
 
-| Thứ tự | File | PM |
-|--------|------|-----|
-| 1 | `pnpm-lock.yaml` | pnpm |
-| 2 | `yarn.lock` | yarn |
-| 3 | `bun.lockb` | bun |
-| 4 | `bun.lock` | bun |
-| 5 | `package-lock.json` | npm |
+| Thứ tự | File                | PM   |
+| ------ | ------------------- | ---- |
+| 1      | `pnpm-lock.yaml`    | pnpm |
+| 2      | `yarn.lock`         | yarn |
+| 3      | `bun.lockb`         | bun  |
+| 4      | `bun.lock`          | bun  |
+| 5      | `package-lock.json` | npm  |
 
 Chỉ `existsSync` tại `join(cwd, file)` — không parse nội dung lockfile.
 
@@ -51,49 +51,49 @@ Chỉ `existsSync` tại `join(cwd, file)` — không parse nội dung lockfile.
 
 ### 2.2 Frontend rules (thứ tự)
 
-| deps (all required) | label |
-|---------------------|-------|
-| `next` | Next.js |
-| `nuxt` | Nuxt |
-| `vite`, `react` | React/Vite |
-| `vite`, `vue` | Vue/Vite |
-| `react-scripts` | React (CRA) |
-| `react` | React |
-| `vue` | Vue |
-| `svelte` | Svelte |
+| deps (all required) | label       |
+| ------------------- | ----------- |
+| `next`              | Next.js     |
+| `nuxt`              | Nuxt        |
+| `vite`, `react`     | React/Vite  |
+| `vite`, `vue`       | Vue/Vite    |
+| `react-scripts`     | React (CRA) |
+| `react`             | React       |
+| `vue`               | Vue         |
+| `svelte`            | Svelte      |
 
 ### 2.3 Backend rules (thứ tự)
 
-| deps | label |
-|------|-------|
-| `@nestjs/core` | NestJS |
-| `express` | Express |
-| `fastify` | Fastify |
-| `koa` | Koa |
-| `hono` | Hono |
+| deps           | label   |
+| -------------- | ------- |
+| `@nestjs/core` | NestJS  |
+| `express`      | Express |
+| `fastify`      | Fastify |
+| `koa`          | Koa     |
+| `hono`         | Hono    |
 
 ### 2.4 Database rules (thứ tự)
 
-| deps | label |
-|------|-------|
-| `mongoose` | MongoDB/Mongoose |
-| `mongodb` | MongoDB |
-| `@prisma/client` | Prisma |
-| `prisma` | Prisma |
-| `typeorm` | TypeORM |
-| `pg` | PostgreSQL |
-| `mysql2` | MySQL |
-| `better-sqlite3` | SQLite |
-| `ioredis` | Redis |
-| `redis` | Redis |
+| deps             | label            |
+| ---------------- | ---------------- |
+| `mongoose`       | MongoDB/Mongoose |
+| `mongodb`        | MongoDB          |
+| `@prisma/client` | Prisma           |
+| `prisma`         | Prisma           |
+| `typeorm`        | TypeORM          |
+| `pg`             | PostgreSQL       |
+| `mysql2`         | MySQL            |
+| `better-sqlite3` | SQLite           |
+| `ioredis`        | Redis            |
+| `redis`          | Redis            |
 
 ### 2.5 Summary strings
 
-| Hàm | Logic |
-|-----|--------|
+| Hàm                     | Logic                                                     |
+| ----------------------- | --------------------------------------------------------- |
 | `stackFrameworkSummary` | `frontend.label + " + " + backend.label` hoặc `"Node.js"` |
-| `stackDatabaseSummary` | `database?.label` |
-| `isStackEmpty` | không có layer nào |
+| `stackDatabaseSummary`  | `database?.label`                                         |
+| `isStackEmpty`          | không có layer nào                                        |
 
 ---
 
@@ -105,14 +105,14 @@ Chỉ `existsSync` tại `join(cwd, file)` — không parse nội dung lockfile.
 
 ### 3.2 Aliases (first match in package.json)
 
-| Key | Aliases |
-|-----|---------|
-| dev | `dev`, `start:dev`, `develop` |
-| build | `build` |
-| test | `test`, `test:unit`, `test:run` |
-| lint | `lint`, `eslint` |
+| Key       | Aliases                                  |
+| --------- | ---------------------------------------- |
+| dev       | `dev`, `start:dev`, `develop`            |
+| build     | `build`                                  |
+| test      | `test`, `test:unit`, `test:run`          |
+| lint      | `lint`, `eslint`                         |
 | typecheck | `typecheck`, `type-check`, `check:types` |
-| format | `format`, `prettier`, `fmt` |
+| format    | `format`, `prettier`, `fmt`              |
 
 ### 3.3 Related dev scripts
 
@@ -128,12 +128,12 @@ Nguồn:
 
 ### 3.4 Run command template
 
-| PM | Pattern |
-|----|---------|
-| pnpm | `pnpm <scriptName>` |
-| yarn | `yarn <scriptName>` |
-| bun | `bun run <scriptName>` |
-| npm | `npm run <scriptName>` |
+| PM   | Pattern                |
+| ---- | ---------------------- |
+| pnpm | `pnpm <scriptName>`    |
+| yarn | `yarn <scriptName>`    |
+| bun  | `bun run <scriptName>` |
+| npm  | `npm run <scriptName>` |
 
 ---
 
@@ -166,13 +166,13 @@ MVP **không** walk vào các folder này — chỉ dùng để filter tên và 
 
 ## 6. package.json đọc cho init
 
-| Field | Map vào |
-|-------|---------|
-| `name` | `ProjectContext.name` |
-| `scripts` | `ProjectContext.scripts` |
-| `dependencies` | `dependencies` |
-| `devDependencies` | `devDependencies` |
-| `packageManager` | input `resolvePackageManager` |
+| Field             | Map vào                       |
+| ----------------- | ----------------------------- |
+| `name`            | `ProjectContext.name`         |
+| `scripts`         | `ProjectContext.scripts`      |
+| `dependencies`    | `dependencies`                |
+| `devDependencies` | `devDependencies`             |
+| `packageManager`  | input `resolvePackageManager` |
 
 Thiếu `package.json` → `readProject` trả context rỗng; `init` fail validation.
 

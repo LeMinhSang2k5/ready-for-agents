@@ -22,7 +22,7 @@ pnpm run build
 ```
 
 - [ ] `pnpm typecheck` — pass
-- [ ] `pnpm test` — pass (hiện ~60 tests)
+- [ ] `pnpm test` — pass (hiện 247 tests)
 - [ ] `pnpm run build` — `dist/` mới nhất (CLI đọc từ đây)
 
 ---
@@ -32,12 +32,18 @@ pnpm run build
 ```bash
 node dist/cli.js --version
 node dist/cli.js init --help
+node dist/cli.js update --help
 node dist/cli.js doctor --help
+node dist/cli.js prompt --help
 node dist/cli.js doctor --json --cwd .
+node dist/cli.js doctor --fix --dry-run --cwd .
+node dist/cli.js update --check --json --cwd .
 ```
 
 - [ ] `doctor` text mode in ra Checks + Score
 - [ ] `doctor --json` in **một dòng JSON** parse được; `jq .` ok
+- [ ] `doctor --fix --dry-run` in fix preview và không ghi file
+- [ ] `update --check --json` in JSON parse được; exit `0` khi context current, exit `1` khi missing/outdated/untracked
 - [ ] Exit `0` khi project pass/warn-only; exit `1` khi cwd sai hoặc thiếu `package.json`
 
 ```bash
@@ -132,7 +138,7 @@ npm publish --access public
 
 ```yaml
 - run: npx agent-context-kit doctor --json --cwd .
-- run: test "$(jq -e '.ok == true' < doctor.json)"  # nếu redirect stdout
+- run: test "$(jq -e '.ok == true' < doctor.json)" # nếu redirect stdout
 ```
 
 Hoặc chỉ: `npx agent-context-kit doctor --json --cwd .` và dựa **exit code**.
