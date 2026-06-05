@@ -7,6 +7,8 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-06-05
+
 ### Added
 
 - **`config init`** — create `.ready-for-agents.json` project defaults
@@ -84,6 +86,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - No network or AI API calls in core CLI paths
 
-[Unreleased]: https://github.com/LeMinhSang2k5/ready-for-agents/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/LeMinhSang2k5/ready-for-agents/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/LeMinhSang2k5/ready-for-agents/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/LeMinhSang2k5/ready-for-agents/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/LeMinhSang2k5/ready-for-agents/releases/tag/v0.1.0

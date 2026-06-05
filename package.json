@@ -1,6 +1,6 @@
 {
   "name": "ready-for-agents",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Make any repository AI-agent-ready in 30 seconds.",
   "type": "module",
   "bin": {
