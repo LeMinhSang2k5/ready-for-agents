@@ -85,7 +85,7 @@ describe("runConfigInit", () => {
 
     expect(code).toBe(0);
     expect(existsSync(join(dir, CONFIG_FILE))).toBe(false);
-    expect(output()).toContain("ready-for-agents config init");
+    expect(output()).toContain("rfa config init");
     expect(output()).toContain(CONFIG_FILE);
     expect(output()).toContain(DEFAULT_INDEX_OUTPUT);
     expect(output()).toContain("Dry run");

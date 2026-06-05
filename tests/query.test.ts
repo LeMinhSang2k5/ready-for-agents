@@ -82,7 +82,7 @@ describe("runQuery", () => {
     });
 
     expect(code).toBe(0);
-    expect(output()).toContain("ready-for-agents query");
+    expect(output()).toContain("rfa query");
     expect(output()).toContain("Source: live scan");
     expect(output()).toContain("COMMANDS.md#test");
     expect(output()).toContain("verification context");
