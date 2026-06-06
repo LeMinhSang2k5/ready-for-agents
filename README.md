@@ -15,8 +15,12 @@
 
 ```
 
-  
-
+[![npm version](https://img.shields.io/npm/v/ready-for-agents?label=npm&color=brightgreen)](https://www.npmjs.com/package/ready-for-agents)
+[![npm downloads](https://img.shields.io/npm/dm/ready-for-agents?label=downloads)](https://www.npmjs.com/package/ready-for-agents)
+[![license](https://img.shields.io/npm/l/ready-for-agents?label=license)](./LICENSE)
+[![node](https://img.shields.io/node/v/ready-for-agents?label=node)](https://www.npmjs.com/package/ready-for-agents)
+[![docs](https://github.com/LeMinhSang2k5/ready-for-agents/actions/workflows/docs.yml/badge.svg)](https://github.com/LeMinhSang2k5/ready-for-agents/actions/workflows/docs.yml)
+[![publish](https://github.com/LeMinhSang2k5/ready-for-agents/actions/workflows/publish.yml/badge.svg)](https://github.com/LeMinhSang2k5/ready-for-agents/actions/workflows/publish.yml)
 
 ---
 
