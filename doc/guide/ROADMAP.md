@@ -21,8 +21,11 @@
 | `prompt` (interactive)   | Interactive mode khi không có arg và stdin là TTY               |
 | `.cursor/rules`          | Cursor project rule tùy chọn qua `init --cursor` hoặc `--all`   |
 | `CLAUDE.md`              | Claude Code guidance tùy chọn qua `init --claude` hoặc `--all`  |
+| `.github/copilot-instructions.md` | GitHub Copilot instructions qua `init --copilot` hoặc `--all` |
 | `update`                 | Refresh generated context files sau khi repo đổi                |
 | `update --check --json`  | Machine-readable freshness check cho CI                         |
+| `diff`                   | So sánh generated context với project hiện tại                  |
+| `ci`                     | Sinh GitHub Actions workflow cho readiness/context freshness    |
 | Generated marker/hash    | Bảo vệ file user tự viết khi chạy `update`                      |
 | `doctor --fix`           | Doctor có thể tạo/refresh context files an toàn                 |
 | `.ready-for-agents.json` | Config project cho default optional files, prompt target, index |

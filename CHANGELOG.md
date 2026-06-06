@@ -7,6 +7,20 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-06-06
+
+### Added
+
+- **`ci`** — generate `.github/workflows/ready-for-agents.yml` for GitHub Actions readiness and context freshness checks.
+- **`diff`** — compare generated context files with the current project; supports text diff and `--json` for CI.
+- **`init --copilot`** — generate `.github/copilot-instructions.md`; `--all`, `update`, and `doctor --fix` can include it too.
+
+### Changed
+
+- Standardized user-facing CLI examples and help around the canonical `rfa` binary.
+- Added short command aliases: `i`, `d`, `u`, `p`, `c i`, `x`, and `q`.
+- Kept the legacy `ready-for-agents` binary and `.agent-context-kit.json` config reader for compatibility.
+
 ## [0.2.1] - 2026-06-05
 
 ### Added
@@ -21,7 +35,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - Uses context tree cache when present, falls back to live generated file scan
   - Supports `--json`, `--limit`, `--tree`, and `--cwd`
 - **`prompt --context --compact`** — build short prompts with relevant context sections from the context tree
-  - `ready-for-agents p "..."` defaults to context + compact
+  - `rfa p "..."` defaults to context + compact
   - `rfa` binary alias supports `rfa p "..."`
 - `init`, `update`, and `doctor --fix` can generate the context tree cache via config or `--index`
 - `prompt --cwd` reads project config for `prompt.target`, `prompt.context`, `prompt.style`, and `prompt.contextLimit`
@@ -86,7 +100,8 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - No network or AI API calls in core CLI paths
 
-[Unreleased]: https://github.com/LeMinhSang2k5/ready-for-agents/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/LeMinhSang2k5/ready-for-agents/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/LeMinhSang2k5/ready-for-agents/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/LeMinhSang2k5/ready-for-agents/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/LeMinhSang2k5/ready-for-agents/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/LeMinhSang2k5/ready-for-agents/releases/tag/v0.1.0

@@ -3,6 +3,14 @@ export { runDoctor } from "./commands/doctor.js";
 export type { DoctorOptions } from "./commands/doctor.js";
 export { runConfigInit } from "./commands/config.js";
 export type { ConfigInitOptions } from "./commands/config.js";
+export { runCi } from "./commands/ci.js";
+export type { CiOptions } from "./commands/ci.js";
+export { createUnifiedDiff, runDiff } from "./commands/diff.js";
+export type {
+  DiffJsonOutput,
+  DiffOptions,
+  GeneratedDiff,
+} from "./commands/diff.js";
 export { runIndex } from "./commands/index.js";
 export type { IndexOptions } from "./commands/index.js";
 export { runQuery } from "./commands/query.js";
@@ -95,8 +103,11 @@ export {
 } from "./detectors/scripts.js";
 export {
   generateAllFiles,
+  generateCiWorkflowFile,
   generateClaudeMd,
+  generateCopilotInstructionsMd,
   generateCursorRules,
+  generateGithubActionsWorkflow,
 } from "./generators/index.js";
 export {
   hasReadme,
@@ -107,6 +118,7 @@ export {
 export { validateCwd } from "./fs/validate.js";
 export type {
   GeneratedFiles,
+  GeneratedFileMap,
   GeneratePreset,
   OutputFile,
   PackageManager,

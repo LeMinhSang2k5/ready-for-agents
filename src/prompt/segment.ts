@@ -22,7 +22,7 @@ const COMMAND_PATTERN = new RegExp(
   [
     String.raw`` + "`([^`]+)`",
     String.raw`\b(?:pnpm|npm|yarn|bun)\s+(?:run\s+)?[\w:./-]+(?:\s+(?:${FLAG_PATTERN}))*`,
-    String.raw`\bready-for-agents\s+[\w:-]+(?:\s+(?:${FLAG_PATTERN}))*`,
+    String.raw`\b(?:rfa|ready-for-agents)\s+[\w:-]+(?:\s+(?:${FLAG_PATTERN}))*`,
     String.raw`\bdoctor(?:\s+(?:${FLAG_PATTERN}))+`,
     String.raw`\b(?:vitest|jest)\s+[\w:./-]+`,
   ].join("|"),

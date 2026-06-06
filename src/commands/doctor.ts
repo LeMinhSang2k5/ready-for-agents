@@ -17,7 +17,7 @@ import {
   writeContextTree,
 } from "../indexer/context-tree.js";
 import type { DoctorCheck, DoctorResult } from "../doctor/checks.js";
-import type { GeneratedFiles, OutputFile } from "../types.js";
+import type { GeneratedFileMap, OutputFile } from "../types.js";
 
 export type DoctorOptions = {
   cwd?: string;
@@ -27,6 +27,7 @@ export type DoctorOptions = {
   force?: boolean;
   cursor?: boolean;
   claude?: boolean;
+  copilot?: boolean;
   all?: boolean;
   index?: boolean;
 };
@@ -244,16 +245,16 @@ function runFix(cwd: string, options: DoctorOptions): DoctorFixJson {
 }
 
 function pickGeneratedFiles(
-  files: GeneratedFiles,
+  files: GeneratedFileMap,
   names: OutputFile[],
-): GeneratedFiles {
+): GeneratedFileMap {
   const picked: Partial<Record<OutputFile, string>> = {};
   for (const name of names) {
     if (files[name] !== undefined) {
       picked[name] = files[name];
     }
   }
-  return picked as GeneratedFiles;
+  return picked;
 }
 
 function printFixResult(fix: DoctorFixResult): void {

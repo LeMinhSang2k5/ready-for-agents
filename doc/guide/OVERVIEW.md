@@ -24,7 +24,9 @@ Không gọi API AI. Không quét đệ quy `node_modules` hay toàn bộ cây t
 ### Trong phạm vi
 
 - Project **Node.js** có `package.json` tại root.
-- Lệnh `init`: sinh `AGENTS.md`, `PROJECT_CONTEXT.md`, `COMMANDS.md`; tùy chọn `.cursor/rules/ready-for-agents.mdc` và `CLAUDE.md`.
+- Lệnh `init`: sinh `AGENTS.md`, `PROJECT_CONTEXT.md`, `COMMANDS.md`; tùy chọn `.cursor/rules/ready-for-agents.mdc`, `CLAUDE.md` và `.github/copilot-instructions.md`.
+- Lệnh `diff`: so sánh generated context với project hiện tại, không ghi file.
+- Lệnh `ci`: sinh GitHub Actions workflow cho readiness và context freshness checks.
 - Lệnh `update`: refresh các file context generated sau khi repo đổi.
 - Lệnh `doctor`: kiểm tra readiness (11 check khi cwd hợp lệ); `--fix` sửa context files an toàn.
 - Lệnh `prompt`: cấu trúc instruction thô thành prompt agent-ready (rule-based).
@@ -74,7 +76,7 @@ flowchart TB
   LF --> I1
   DEP --> I1
   I1 --> I2 --> I3
-  I3 --> OUT["Core files + optional Cursor/Claude files"]
+  I3 --> OUT["Core files + optional agent files"]
   I3 --> TREE[Context tree cache]
 
   CWD --> U1

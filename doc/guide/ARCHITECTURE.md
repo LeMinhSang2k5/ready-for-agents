@@ -177,7 +177,7 @@ validateInitTarget
 
 npm **luôn** đính kèm `README.md`, `README.vi.md`, `LICENSE`, và `package.json` dù không liệt kê trong `files`. Publish checklist: [PUBLISH_CHECKLIST.md](../../PUBLISH_CHECKLIST.md). Link tương đối trong README tới `./doc/guide/...` hoạt động trên npmjs.com vì `doc/guide` nằm trong tarball.
 
-Runtime user: `npx ready-for-agents` hoặc global install — không cần `src/`; có thể đọc docs tại `node_modules/ready-for-agents/doc/guide/`.
+Runtime user: `npx --package ready-for-agents rfa` hoặc global install — không cần `src/`; có thể đọc docs tại `node_modules/ready-for-agents/doc/guide/`.
 
 ---
 

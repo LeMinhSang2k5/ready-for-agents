@@ -31,7 +31,7 @@ function normalizePromptStyle(style: PromptOptions["style"]): PromptStyle {
 }
 
 /**
- * `ready-for-agents prompt` — structure rough instructions (no AI API).
+ * `rfa prompt` — structure rough instructions (no AI API).
  *
  * Exit 0 on success, 1 on empty input.
  */

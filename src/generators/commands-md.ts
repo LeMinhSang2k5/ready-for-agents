@@ -66,11 +66,11 @@ ${installBlock(ctx.packageManager)}
 
 ${sectionForScript(ctx, "Development", "dev")}${sectionForScript(ctx, "Build", "build")}${sectionForScript(ctx, "Test", "test")}${sectionForScript(ctx, "Lint", "lint")}${sectionForScript(ctx, "Typecheck", "typecheck")}${sectionForScript(ctx, "Format", "format")}## Agent Context
 
-If \`ready-for-agents\` is available, use these before asking an AI agent to inspect the full repository:
+If \`rfa\` is available, use these before asking an AI agent to inspect the full repository:
 
 \`\`\`bash
-ready-for-agents query "describe the task" --cwd .
-ready-for-agents index --cwd .
+rfa query "describe the task" --cwd .
+rfa index --cwd .
 \`\`\`
 `;
 

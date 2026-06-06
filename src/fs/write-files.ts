@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
-import type { GeneratedFiles, OutputFile } from "../types.js";
+import type { GeneratedFileMap, OutputFile } from "../types.js";
 import { OUTPUT_FILES } from "../types.js";
 
 export type WriteResult = {
@@ -13,14 +13,14 @@ export function getExistingOutputFiles(cwd: string): OutputFile[] {
   return OUTPUT_FILES.filter((name) => existsSync(join(cwd, name)));
 }
 
-export function getGeneratedFileNames(files: GeneratedFiles): OutputFile[] {
+export function getGeneratedFileNames(files: GeneratedFileMap): OutputFile[] {
   return OUTPUT_FILES.filter((name) => files[name] !== undefined);
 }
 
 export function planWriteActions(
   cwd: string,
   force: boolean,
-  files?: GeneratedFiles,
+  files?: GeneratedFileMap,
 ): {
   wouldCreate: OutputFile[];
   wouldOverwrite: OutputFile[];
@@ -47,7 +47,7 @@ export function planWriteActions(
 
 export function writeGeneratedFiles(
   cwd: string,
-  files: GeneratedFiles,
+  files: GeneratedFileMap,
   options: { force: boolean },
 ): WriteResult {
   const result: WriteResult = {

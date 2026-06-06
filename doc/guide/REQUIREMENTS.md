@@ -30,9 +30,10 @@ Ký hiệu trạng thái: **Done** = đã implement + có test; **Planned** = ro
 | FR-init-8  | Dry-run in preview đầy đủ 3 file     | Có separator và notice "Dry run"                                                        | Done       |
 | FR-init-9  | Sinh Cursor rules tùy chọn           | `init --cursor` tạo `.cursor/rules/ready-for-agents.mdc` an toàn                        | Done       |
 | FR-init-10 | Sinh Claude guidance tùy chọn        | `init --claude` tạo `CLAUDE.md` an toàn                                                 | Done       |
-| FR-init-11 | Sinh toàn bộ file agent tùy chọn     | `init --all` tạo Cursor rules + `CLAUDE.md`                                             | Done       |
+| FR-init-11 | Sinh toàn bộ file agent tùy chọn     | `init --all` tạo Cursor rules + `CLAUDE.md` + Copilot instructions                      | Done       |
 | FR-init-12 | Sinh context tree cache              | Khi index bật, tạo `.ready-for-agents/context-tree.json`; `--dry-run` không ghi cache   | Done       |
 | FR-init-13 | Dùng config project                  | `.ready-for-agents.json` set default optional files / index; CLI flag override config   | Done       |
+| FR-init-14 | Sinh Copilot instructions tùy chọn   | `init --copilot` tạo `.github/copilot-instructions.md` an toàn                          | Done       |
 
 ---
 
@@ -63,7 +64,7 @@ Khi `runDoctor({ json: true })` hoặc CLI `doctor --json`:
 | Tiêu chí               | Acceptance                                                         |
 | ---------------------- | ------------------------------------------------------------------ |
 | Một object trên stdout | `JSON.parse(stdout)` thành công; không có dòng text khác           |
-| Không UI terminal      | Không in `ready-for-agents doctor`, không màu (picocolors)         |
+| Không UI terminal      | Không in `rfa doctor`, không màu (picocolors)         |
 | Field `cwd`            | Đường dẫn đã `resolve()` (absolute)                                |
 | Field `ok`             | `true` iff không có check `fail` (cùng logic `hasCriticalFailure`) |
 | Field `score`          | `{ passed, warned, failed, total }` khớp `DoctorResult`            |
@@ -108,7 +109,7 @@ Khi `runDoctor({ fix: true, json: true })` hoặc CLI `doctor --fix --json`:
 | FR-update-1  | Refresh 3 file core generated   | `update` overwrite `AGENTS.md`, `PROJECT_CONTEXT.md`, `COMMANDS.md` khi file có generated marker hợp lệ | Done       |
 | FR-update-2  | Preview không ghi file          | `update --dry-run` in would overwrite/create và giữ disk state                                          | Done       |
 | FR-update-3  | Tạo file core nếu thiếu         | Project hợp lệ nhưng chưa có context files vẫn tạo được                                                 | Done       |
-| FR-update-4  | Refresh optional agent files    | `update --all` overwrite Cursor rules + `CLAUDE.md`                                                     | Done       |
+| FR-update-4  | Refresh optional agent files    | `update --all` overwrite Cursor rules + `CLAUDE.md` + Copilot instructions                              | Done       |
 | FR-update-5  | Hỗ trợ `--cwd`                  | Cùng validation path với `init`                                                                         | Done       |
 | FR-update-6  | Không ghi đè file user tự viết  | File tồn tại nhưng không có marker hợp lệ → `Skipped untracked`, exit 1                                 | Done       |
 | FR-update-7  | `--force` ghi đè untracked file | User chủ động truyền `--force` thì overwrite file không có marker                                       | Done       |
@@ -153,7 +154,7 @@ Khi `runUpdate({ check: true, json: true })`, CLI `update --check --json`, hoặ
 | FR-prompt-14 | Dùng config target             | Nếu không có `--target`, đọc `prompt.target` từ `.ready-for-agents.json`              | Done       |
 | FR-prompt-15 | `--context`                    | Chèn relevant context từ context tree/cache hoặc live scan                            | Done       |
 | FR-prompt-16 | `--compact`                    | Render prompt ngắn hơn, giữ Task/Relevant Context/Verify chính                        | Done       |
-| FR-prompt-17 | Alias `p`                      | `ready-for-agents p "..."` mặc định context + compact                                 | Done       |
+| FR-prompt-17 | Alias `p`                      | `rfa p "..."` mặc định context + compact                                 | Done       |
 | FR-prompt-18 | Binary alias `rfa`             | `rfa p "..."` gọi cùng CLI                                                            | Done       |
 | FR-prompt-19 | Config context/compact         | `prompt.context`, `prompt.style`, `prompt.contextLimit` làm default                   | Done       |
 
@@ -170,6 +171,28 @@ Khi `runUpdate({ check: true, json: true })`, CLI `update --check --json`, hoặ
 | FR-config-3 | Không ghi đè mặc định       | Config tồn tại → output `Skipped`, không overwrite                           | Done       |
 | FR-config-4 | `--force` ghi đè config     | Config tồn tại và có `--force` → overwrite                                   | Done       |
 | FR-config-5 | Legacy config compatibility | Reader hỗ trợ `.agent-context-kit.json` nếu chưa có `.ready-for-agents.json` | Done       |
+
+---
+
+## FR-diff — Lệnh `diff`
+
+| ID        | Mô tả                         | Acceptance                                                              | Trạng thái |
+| --------- | ----------------------------- | ----------------------------------------------------------------------- | ---------- |
+| FR-diff-1 | So sánh generated context     | Không ghi file; phân loại upToDate / outdated / missing / untracked    | Done       |
+| FR-diff-2 | In text diff                  | File outdated có unified-style diff giữa current và generated output    | Done       |
+| FR-diff-3 | `--json` machine-readable     | In `{ ok, upToDate, outdated, missing, untracked, diffs }`; không UI    | Done       |
+| FR-diff-4 | Optional agent files          | `--cursor`, `--claude`, `--copilot`, `--all` chọn thêm optional files   | Done       |
+
+---
+
+## FR-ci — Lệnh `ci`
+
+| ID      | Mô tả                          | Acceptance                                                              | Trạng thái |
+| ------- | ------------------------------ | ----------------------------------------------------------------------- | ---------- |
+| FR-ci-1 | Sinh GitHub Actions workflow   | `ci` tạo `.github/workflows/ready-for-agents.yml`                       | Done       |
+| FR-ci-2 | `--dry-run` không ghi file     | Preview workflow content và giữ disk state                              | Done       |
+| FR-ci-3 | Safe write                     | Không overwrite workflow existing nếu thiếu `--force`                   | Done       |
+| FR-ci-4 | Workflow checks                | Workflow chạy `rfa doctor --json` và `rfa diff --json` bằng npm package | Done       |
 
 ---
 
@@ -216,7 +239,6 @@ Khi `runUpdate({ check: true, json: true })`, CLI `update --check --json`, hoặ
 | ID           | Mô tả                            | Trạng thái |
 | ------------ | -------------------------------- | ---------- |
 | FR-lang-1    | Detect Python / FastAPI / Django | Planned    |
-| FR-ci-1      | GitHub Action đồng bộ context    | Planned    |
 | FR-ai-1      | Tóm tắt tùy chọn bằng AI         | Planned    |
 | FR-prompt-10 | `--style`                        | Planned    |
 | FR-prompt-13 | `--ai` rewrite opt-in            | Planned    |
@@ -229,6 +251,7 @@ Khi `runUpdate({ check: true, json: true })`, CLI `update --check --json`, hoặ
 | --------------------------------- | --------------------------------------------------------------------------------------- |
 | FR-init                           | `tests/validation.test.ts`, `tests/init-safety.test.ts`                                 |
 | FR-update                         | `tests/update.test.ts`                                                                  |
+| FR-diff / FR-ci                   | `tests/ci-diff.test.ts`                                                                 |
 | FR-doctor (gồm `--json`, `--fix`) | `tests/doctor.test.ts` — blocks `runDoctor --json`, `runDoctor --fix`                   |
 | FR-config / FR-index              | `tests/config-index.test.ts`                                                            |
 | FR-detect                         | `tests/detectors.test.ts`, `tests/package-manager.test.ts`                              |

@@ -9,7 +9,7 @@ Accepted
 User thường chạy:
 
 ```bash
-ready-for-agents doctor --cwd /sai/duong/dan
+rfa doctor --cwd /sai/duong/dan
 ```
 
 Nếu tiếp tục chạy đủ 11 check, mọi check file (`package.json`, context files, scripts) đều fail/warn vì path không phải project thật. Output dài và **che mất nguyên nhân gốc**: thư mục không tồn tại hoặc không phải directory.

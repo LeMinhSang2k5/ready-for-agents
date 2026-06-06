@@ -2,7 +2,7 @@
 
 Runner: **Vitest** (`pnpm test`).
 
-Hiện tại: **256 tests** trong 11 file (cập nhật khi thêm test).
+Hiện tại: **279 tests** trong 15 file (cập nhật khi thêm test).
 
 ---
 
@@ -14,10 +14,12 @@ Hiện tại: **256 tests** trong 11 file (cập nhật khi thêm test).
 | Bảo vệ detect rules     | `detectors.test.ts`, `package-manager.test.ts`                        |
 | An toàn ghi file        | `init-safety.test.ts`                                                 |
 | Doctor contract         | `doctor.test.ts` (text + `--json` + `--fix`)                          |
-| CI machine-readable     | `doctor.test.ts` → `runDoctor --json` (FR-doctor-8)                   |
+| CI machine-readable     | `doctor.test.ts`, `ci-diff.test.ts` → JSON outputs                    |
 | Validation init         | `validation.test.ts`                                                  |
 | Update contract         | `update.test.ts` (`--check`, `--json`, marker/untracked safety)       |
-| Config/index contract   | `config-index.test.ts`, `query.test.ts`                               |
+| Config/index/query      | `config-index.test.ts`, `query.test.ts`                               |
+| CI/diff contract        | `ci-diff.test.ts`                                                     |
+| CLI entrypoint          | `cli.test.ts`                                                         |
 | Format output Markdown  | `generators.test.ts`                                                  |
 | Prompt pipeline (no AI) | `prompt.test.ts`, `prompt-examples.test.ts`, `prompt-quality.test.ts` |
 
@@ -35,6 +37,8 @@ Hiện tại: **256 tests** trong 11 file (cập nhật khi thêm test).
 ├─────────────────────────────────────┤
 │  Component (config/index/query)     │  config-index.test.ts, query.test.ts
 ├─────────────────────────────────────┤
+│  Component (ci/diff)                │  ci-diff.test.ts
+├─────────────────────────────────────┤
 │  Unit (detectors, doctor, PM)       │  detectors, doctor, package-manager
 ├─────────────────────────────────────┤
 │  Generator output contract          │  generators.test.ts
@@ -49,14 +53,16 @@ Hiện tại: **256 tests** trong 11 file (cập nhật khi thêm test).
 | ------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------- |
 | `doctor.test.ts`          | 19        | `runDoctorChecks`, `formatScore`, `hasCriticalFailure`, cwd early exit, `--json`, `--fix`                            |
 | `validation.test.ts`      | 7         | `runInit` validation, dry-run không ghi                                                                              |
-| `init-safety.test.ts`     | 18        | skip/force/overwrite, dry-run plan, optional Cursor/Claude files                                                     |
-| `update.test.ts`          | 9         | update marker/hash safety, `--force`, dry-run, missing files, optional Cursor/Claude refresh, `--check --json`       |
+| `init-safety.test.ts`     | 18        | skip/force/overwrite, dry-run plan, optional Cursor/Claude/Copilot files                                             |
+| `update.test.ts`          | 9         | update marker/hash safety, `--force`, dry-run, missing files, optional Cursor/Claude/Copilot refresh, `--check --json` |
+| `ci-diff.test.ts`         | 5         | `ci` workflow dry-run/write safety, `diff` current/stale/json behavior                                               |
+| `cli.test.ts`             | 10        | canonical `rfa` help output and command/alias help                                                                  |
 | `config-index.test.ts`    | 9         | `config init`, legacy config read, config defaults, prompt target config, `index` write/dry-run/json                 |
 | `query.test.ts`           | 3         | live context selection, cached tree `--json`, empty query validation                                                 |
 | `detectors.test.ts`       | 16        | stack, scripts, related scripts, labels                                                                              |
 | `package-manager.test.ts` | 5         | lockfile priority, field parse, fallback                                                                             |
-| `generators.test.ts`      | 5         | AGENTS spacing, COMMANDS fallback label, trailing newline, optional agent generators                                 |
-| `prompt.test.ts`          | 26        | segment, classify, explain/clarify/review, sections, JSON schema, input source validation, `--target`, stats wording |
+| `generators.test.ts`      | 6         | AGENTS spacing, COMMANDS fallback label, trailing newline, optional agent generators, CI workflow marker             |
+| `prompt.test.ts`          | 27        | segment, classify, explain/clarify/review, sections, JSON schema, input source validation, `--target`, stats wording |
 | `prompt-context.test.ts`  | 3         | `prompt --context --compact`, JSON `relevantContext`, config context/style defaults                                  |
 | `prompt-examples.test.ts` | 131       | bilingual/mixed prompt example suite for intent classification                                                       |
 | `prompt-quality.test.ts`  | 11        | output quality signals: task, requirements, verify, unclear, constraints                                             |
@@ -122,7 +128,7 @@ expect(parsed).toMatchObject({
     }),
   ]),
 });
-expect(stdout).not.toContain("ready-for-agents doctor");
+expect(stdout).not.toContain("rfa doctor");
 ```
 
 Map FR: [REQUIREMENTS.md § FR-doctor-8](./REQUIREMENTS.md#fr-doctor-8--json-output).
@@ -233,9 +239,9 @@ CI khuyến nghị: `test` + `typecheck` + `build` trên Node 18/20/22.
 Ví dụ gate readiness trên project (sau khi cài CLI):
 
 ```bash
-ready-for-agents doctor --json --cwd . | jq -e '.ok == true'
+rfa doctor --json --cwd . | jq -e '.ok == true'
 # hoặc chỉ dựa exit code:
-ready-for-agents doctor --json --cwd .
+rfa doctor --json --cwd .
 ```
 
 ---

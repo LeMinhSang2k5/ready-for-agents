@@ -1,6 +1,6 @@
 # Prompt Example Suite
 
-This suite is used to improve `ready-for-agents prompt` without adding AI API dependencies.
+This suite is used to improve `rfa prompt` without adding AI API dependencies.
 
 It is not machine-learning training data. It is a deterministic rule-tuning suite: add real prompts, define expected intent/signals, convert the cases into tests, then tune the parser.
 
@@ -28,7 +28,7 @@ It is not machine-learning training data. It is a deterministic rule-tuning suit
 | ID   | Lang | Expected intent | Raw prompt                                                              | Expected signals                                            |
 | ---- | ---- | --------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------- |
 | P001 | vi   | explain         | Vì sao tôi nên có tính năng prompt này?                                 | Explain usefulness; mention no invented capabilities.       |
-| P002 | en   | explain         | Explain what `ready-for-agents prompt` does and when I should use it.   | Explain purpose, usage, and limits.                         |
+| P002 | en   | explain         | Explain what `rfa prompt` does and when I should use it.                | Explain purpose, usage, and limits.                         |
 | P003 | vi   | explain         | lệnh doctor khác gì với init vậy?                                       | Compare `doctor` and `init`.                                |
 | P004 | en   | explain         | What is the difference between dry-run and force in this CLI?           | Explain flags and safety behavior.                          |
 | P005 | vi   | explain         | pnpm là gì và vì sao project này dùng pnpm?                             | Explain pnpm; relate to project if context exists.          |
@@ -140,7 +140,7 @@ It is not machine-learning training data. It is a deterministic rule-tuning suit
 | P111 | vi   | general         | hãy viết AGENTS.md mẫu cho repo React Express                           | Draft sample AGENTS.md.                                     |
 | P112 | en   | general         | Convert these requirements into implementation tasks.                   | Break down tasks.                                           |
 | P113 | vi   | general         | tạo checklist kiểm tra trước khi pnpm pack                              | Create pack checklist.                                      |
-| P114 | en   | general         | Draft docs for `ready-for-agents prompt --stdin`.                       | Write docs.                                                 |
+| P114 | en   | general         | Draft docs for `rfa prompt --stdin`.                                    | Write docs.                                                 |
 | P115 | vi   | general         | hãy tạo spec cho command update trong tương lai                         | Draft future command spec.                                  |
 | P116 | en   | general         | Propose folder structure for adding Python detection.                   | Design structure.                                           |
 | P117 | vi   | general         | viết phần giới thiệu ngắn cho GitHub repo                               | Draft intro/tagline.                                        |

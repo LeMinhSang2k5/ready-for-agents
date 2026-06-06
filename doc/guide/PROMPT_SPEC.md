@@ -35,11 +35,11 @@
 
 | Lệnh                                    | Mô tả                        |
 | --------------------------------------- | ---------------------------- |
-| `ready-for-agents prompt "<text>"`      | Instruction từ argument      |
-| `ready-for-agents prompt --stdin`       | Đọc stdin                    |
-| `ready-for-agents prompt --file <path>` | Đọc file                     |
-| `ready-for-agents prompt --cwd <path>`  | Đọc config project           |
-| `ready-for-agents prompt`               | Interactive (TTY) hoặc stdin |
+| `rfa prompt "<text>"`      | Instruction từ argument      |
+| `rfa prompt --stdin`       | Đọc stdin                    |
+| `rfa prompt --file <path>` | Đọc file                     |
+| `rfa prompt --cwd <path>`  | Đọc config project           |
+| `rfa prompt`               | Interactive (TTY) hoặc stdin |
 
 | Flag                      | Mô tả                                        |
 | ------------------------- | -------------------------------------------- |
@@ -141,7 +141,7 @@ Vì sao tôi nên có tính prompt này, hãy hướng dẫn tôi sử dụng t�
 **Input:**
 
 ```bash
-ready-for-agents prompt --target en "sửa lỗi doctor --json giúp tôi"
+rfa prompt --target en "sửa lỗi doctor --json giúp tôi"
 ```
 
 **Output signal:**

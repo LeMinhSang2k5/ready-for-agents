@@ -56,9 +56,9 @@ ${folderBlock}
 ## Agent Context Workflow
 
 - If \`.ready-for-agents/context-tree.json\` exists, read it first as a compact section map.
-- Use \`ready-for-agents query "<task>" --cwd .\` to find the most relevant context sections before opening full Markdown files.
+- Use \`rfa query "<task>" --cwd .\` to find the most relevant context sections before opening full Markdown files.
 - Open only the listed sections first, then expand to full files or source code when needed.
-- Re-run \`ready-for-agents index --cwd .\` after refreshing generated context files.
+- Re-run \`rfa index --cwd .\` after refreshing generated context files.
 
 ## Important Rules
 
@@ -69,7 +69,7 @@ ${importantRules.join("\n")}
 - Lockfiles (\`package-lock.json\`, \`pnpm-lock.yaml\`, \`yarn.lock\`, \`bun.lock\`, \`bun.lockb\`) unless dependencies change.
 - Generated output directories (\`dist/\`, \`build/\`, \`.next/\`) unless rebuilding is required.
 - Generated context cache (\`.ready-for-agents/\`) unless refreshing the context index.
-- This file and other agent context files unless the user asks to refresh them with \`ready-for-agents init --force\`.
+- This file and other agent context files unless the user asks to refresh them with \`rfa init --force\`.
 
 ## Testing Expectations
 

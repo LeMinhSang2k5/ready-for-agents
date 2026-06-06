@@ -252,7 +252,7 @@ describe("runDoctor --json", () => {
     };
 
     expect(code).toBe(0);
-    expect(out).not.toContain("ready-for-agents doctor");
+    expect(out).not.toContain("rfa doctor");
     expect(parsed.cwd).toBe(dir);
     expect(parsed.ok).toBe(true);
     expect(parsed.score.failed).toBe(0);
@@ -373,7 +373,7 @@ describe("runDoctor --fix", () => {
       ok: true,
     });
     expect(parsed.fix.created).toContain("AGENTS.md");
-    expect(output()).not.toContain("ready-for-agents doctor");
+    expect(output()).not.toContain("rfa doctor");
   });
 
   it("does not run fixes when doctor has a critical failure", async () => {

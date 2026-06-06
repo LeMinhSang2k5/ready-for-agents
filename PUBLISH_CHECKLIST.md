@@ -6,7 +6,7 @@ Checklist trước khi `npm publish` (hoặc `pnpm publish`). Chạy từ root r
 
 ## 1. Version & changelog
 
-- Bump `version` in `package.json` (semver: patch / minor / major) — hiện **0.2.0**
+- Bump `version` in `package.json` (semver: patch / minor / major) — hiện **0.2.2**
 - Cập nhật [CHANGELOG.md](./CHANGELOG.md): chuyển mục `[Unreleased]` → `[x.y.z] - YYYY-MM-DD`
 - Tag git: `git tag vX.Y.Z` (sau khi merge release)
 
@@ -22,7 +22,7 @@ pnpm run build
 ```
 
 - `pnpm typecheck` — pass
-- `pnpm test` — pass (hiện 256 tests)
+- `pnpm test` — pass (hiện 279 tests)
 - `pnpm run build` — `dist/` mới nhất (CLI đọc từ đây)
 
 ---
@@ -31,17 +31,29 @@ pnpm run build
 
 ```bash
 node dist/cli.js --version
+node dist/cli.js --help
 node dist/cli.js init --help
+node dist/cli.js i --help
 node dist/cli.js update --help
+node dist/cli.js u --help
+node dist/cli.js diff --help
+node dist/cli.js ci --help
 node dist/cli.js doctor --help
+node dist/cli.js d --help
 node dist/cli.js prompt --help
 node dist/cli.js p --help
 node dist/cli.js config init --help
+node dist/cli.js c i --help
 node dist/cli.js index --help
+node dist/cli.js x --help
 node dist/cli.js query --help
+node dist/cli.js q --help
 node dist/cli.js doctor --json --cwd .
 node dist/cli.js doctor --fix --dry-run --cwd .
 node dist/cli.js update --check --json --cwd .
+node dist/cli.js diff --json --cwd .
+node dist/cli.js ci --dry-run --cwd .
+node dist/cli.js init --copilot --dry-run --cwd .
 node dist/cli.js config init --dry-run --cwd .
 node dist/cli.js index --dry-run --cwd .
 node dist/cli.js index --json --cwd .
@@ -55,10 +67,14 @@ node dist/cli.js p "how should I verify this change?" --cwd .
 - `doctor --json` in **một dòng JSON** parse được; `jq .` ok
 - `doctor --fix --dry-run` in fix preview và không ghi file
 - `update --check --json` in JSON parse được; exit `0` khi context current, exit `1` khi missing/outdated/untracked
+- `diff --json` parse được; exit `0` khi current, exit `1` khi missing/outdated/untracked
+- `ci --dry-run` preview `.github/workflows/ready-for-agents.yml` và không ghi file
+- `init --copilot --dry-run` preview `.github/copilot-instructions.md`
 - `config init --dry-run` in `.ready-for-agents.json` preview và không ghi file
 - `index --dry-run` in metadata; `index --json` parse được
 - `query` text mode in section refs; `query --json` parse được
 - `prompt --context --compact` và `p` in `Relevant Context` khi context files tồn tại
+- Help output dùng canonical name `rfa`; alias `i/d/u/p/c i/x/q` hoạt động
 - Exit `0` khi project pass/warn-only; exit `1` khi cwd sai hoặc thiếu `package.json`
 
 ```bash
@@ -137,7 +153,7 @@ npm publish --access public
 ```
 
 - Xác nhận trên [https://www.npmjs.com/package/ready-for-agents](https://www.npmjs.com/package/ready-for-agents)
-- `npx ready-for-agents@X.Y.Z doctor --json` từ máy sạch (hoặc CI)
+- `npx --package ready-for-agents@X.Y.Z rfa doctor --json` từ máy sạch (hoặc CI)
 
 ---
 
@@ -174,8 +190,8 @@ Hoặc: **Actions** → **Publish to npm** → **Run workflow** (`workflow_dispa
 ## CI gate gợi ý (consumer repos)
 
 ```yaml
-- run: npx ready-for-agents doctor --json --cwd .
+- run: npx --package ready-for-agents rfa doctor --json --cwd .
 - run: test "$(jq -e '.ok == true' < doctor.json)" # nếu redirect stdout
 ```
 
-Hoặc chỉ: `npx ready-for-agents doctor --json --cwd .` và dựa **exit code**.
+Hoặc chỉ: `npx --package ready-for-agents rfa doctor --json --cwd .` và dựa **exit code**.

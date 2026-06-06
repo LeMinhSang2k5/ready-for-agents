@@ -3,7 +3,10 @@ import { dirname, join } from "node:path";
 import { tmpdir } from "node:os";
 import { afterEach, describe, expect, it } from "vitest";
 import { readProject } from "../src/fs/read-project.js";
-import { generateAllFiles } from "../src/generators/index.js";
+import {
+  generateAllFiles,
+  generateCiWorkflowFile,
+} from "../src/generators/index.js";
 import type { OutputFile } from "../src/types.js";
 
 const tempDirs: string[] = [];
@@ -100,7 +103,7 @@ describe("generateAllFiles formatting", () => {
     }
   });
 
-  it("can generate Cursor rules and CLAUDE.md on demand", () => {
+  it("can generate Cursor, Claude, and Copilot files on demand", () => {
     const dir = makeProjectDir("agent-native", standardPkg, {
       "pnpm-lock.yaml": "",
       "README.md": "# Hi",
@@ -109,6 +112,7 @@ describe("generateAllFiles formatting", () => {
       "core",
       "cursor",
       "claude",
+      "copilot",
     ]);
 
     expect(files[".cursor/rules/ready-for-agents.mdc"]).toContain(
@@ -119,5 +123,24 @@ describe("generateAllFiles formatting", () => {
     );
     expect(files["CLAUDE.md"]).toContain("# CLAUDE.md");
     expect(files["CLAUDE.md"]).toContain("Response Expectations");
+    expect(files[".github/copilot-instructions.md"]).toContain(
+      "# GitHub Copilot Instructions",
+    );
+    expect(files[".github/copilot-instructions.md"]).toContain(
+      "GitHub Copilot Chat",
+    );
+  });
+
+  it("generates a marked GitHub Actions workflow", () => {
+    const files = generateCiWorkflowFile();
+    const workflow = files[".github/workflows/ready-for-agents.yml"]!;
+
+    expect(workflow).toContain("name: ready-for-agents");
+    expect(workflow).toContain("rfa doctor --json --cwd .");
+    expect(workflow).toContain("rfa diff --json --cwd .");
+    expect(workflow).toContain(
+      '# ready-for-agents:generated file=".github/workflows/ready-for-agents.yml"',
+    );
+    expect(workflow).not.toContain("<!-- ready-for-agents:generated");
   });
 });

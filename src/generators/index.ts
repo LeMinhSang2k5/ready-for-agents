@@ -1,4 +1,5 @@
 import type {
+  GeneratedFileMap,
   GeneratedFiles,
   GeneratePreset,
   ProjectContext,
@@ -6,7 +7,9 @@ import type {
 import { generateAgentsMd } from "./agents-md.js";
 import { generateClaudeMd } from "./claude-md.js";
 import { generateCommandsMd } from "./commands-md.js";
+import { generateCopilotInstructionsMd } from "./copilot-instructions-md.js";
 import { generateCursorRules } from "./cursor-rules.js";
+import { generateGithubActionsWorkflow } from "./github-actions-workflow.js";
 import { addGeneratedMarkers } from "./marker.js";
 import { generateProjectContextMd } from "./project-context-md.js";
 
@@ -26,15 +29,27 @@ export function generateAllFiles(
   if (presets.includes("claude")) {
     files["CLAUDE.md"] = generateClaudeMd(ctx);
   }
+  if (presets.includes("copilot")) {
+    files[".github/copilot-instructions.md"] =
+      generateCopilotInstructionsMd(ctx);
+  }
 
   return addGeneratedMarkers(files);
+}
+
+export function generateCiWorkflowFile(): GeneratedFileMap {
+  return addGeneratedMarkers({
+    ".github/workflows/ready-for-agents.yml": generateGithubActionsWorkflow(),
+  });
 }
 
 export {
   generateAgentsMd,
   generateClaudeMd,
   generateCommandsMd,
+  generateCopilotInstructionsMd,
   generateCursorRules,
+  generateGithubActionsWorkflow,
   generateProjectContextMd,
 };
 export {

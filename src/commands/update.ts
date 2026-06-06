@@ -20,7 +20,7 @@ import {
   validateInitTarget,
 } from "../fs/read-project.js";
 import { getGeneratedFileNames } from "../fs/write-files.js";
-import type { GeneratedFiles, OutputFile } from "../types.js";
+import type { GeneratedFileMap, OutputFile } from "../types.js";
 
 export type UpdateOptions = {
   dryRun?: boolean;
@@ -30,6 +30,7 @@ export type UpdateOptions = {
   cwd?: string;
   cursor?: boolean;
   claude?: boolean;
+  copilot?: boolean;
   all?: boolean;
   index?: boolean;
 };
@@ -147,7 +148,7 @@ export async function runUpdate(options: UpdateOptions): Promise<number> {
 
 export function checkGeneratedFiles(
   cwd: string,
-  files: GeneratedFiles,
+  files: GeneratedFileMap,
 ): UpdateCheckJsonOutput {
   const upToDate: OutputFile[] = [];
   const outdated: OutputFile[] = [];
@@ -186,7 +187,7 @@ export function checkGeneratedFiles(
 
 export function writeUpdateFiles(
   cwd: string,
-  files: GeneratedFiles,
+  files: GeneratedFileMap,
   options: { force: boolean },
 ): UpdateWriteResult {
   const created: OutputFile[] = [];
@@ -249,7 +250,7 @@ function printCheckResult(result: UpdateCheckJsonOutput): void {
   }
 }
 
-function printUpdateDryRun(cwd: string, files: GeneratedFiles): void {
+function printUpdateDryRun(cwd: string, files: GeneratedFileMap): void {
   const result = checkGeneratedFiles(cwd, files);
   printList("Would generate:", result.missing);
   printList("Would overwrite:", result.outdated);

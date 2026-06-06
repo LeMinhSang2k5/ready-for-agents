@@ -182,6 +182,7 @@ describe("safe behavior", () => {
       dryRun: true,
       cursor: true,
       claude: true,
+      copilot: true,
     });
 
     expect(code).toBe(0);
@@ -189,16 +190,25 @@ describe("safe behavior", () => {
       false,
     );
     expect(existsSync(join(dir, "CLAUDE.md"))).toBe(false);
+    expect(existsSync(join(dir, ".github/copilot-instructions.md"))).toBe(
+      false,
+    );
 
     const out = output();
     expect(out).toContain(".cursor/rules/ready-for-agents.mdc");
     expect(out).toContain("CLAUDE.md");
+    expect(out).toContain(".github/copilot-instructions.md");
   });
 
-  it("generates optional Cursor and Claude files when requested", async () => {
+  it("generates optional Cursor, Claude, and Copilot files when requested", async () => {
     const dir = makeProject("optional");
 
-    const code = await runInit({ cwd: dir, cursor: true, claude: true });
+    const code = await runInit({
+      cwd: dir,
+      cursor: true,
+      claude: true,
+      copilot: true,
+    });
 
     expect(code).toBe(0);
     expect(
@@ -207,6 +217,9 @@ describe("safe behavior", () => {
     expect(readFileSync(join(dir, "CLAUDE.md"), "utf-8")).toContain(
       "# CLAUDE.md",
     );
+    expect(
+      readFileSync(join(dir, ".github/copilot-instructions.md"), "utf-8"),
+    ).toContain("# GitHub Copilot Instructions");
   });
 
   it("--all generates all optional agent files", async () => {
@@ -219,21 +232,31 @@ describe("safe behavior", () => {
       true,
     );
     expect(existsSync(join(dir, "CLAUDE.md"))).toBe(true);
+    expect(existsSync(join(dir, ".github/copilot-instructions.md"))).toBe(true);
   });
 
   it("does not overwrite optional files without --force", async () => {
     const dir = makeProject("optional-no-force", {
       ".cursor/rules/ready-for-agents.mdc": "KEEP_CURSOR",
       "CLAUDE.md": "KEEP_CLAUDE",
+      ".github/copilot-instructions.md": "KEEP_COPILOT",
     });
 
-    const code = await runInit({ cwd: dir, cursor: true, claude: true });
+    const code = await runInit({
+      cwd: dir,
+      cursor: true,
+      claude: true,
+      copilot: true,
+    });
 
     expect(code).toBe(0);
     expect(
       readFileSync(join(dir, ".cursor/rules/ready-for-agents.mdc"), "utf-8"),
     ).toBe("KEEP_CURSOR");
     expect(readFileSync(join(dir, "CLAUDE.md"), "utf-8")).toBe("KEEP_CLAUDE");
+    expect(
+      readFileSync(join(dir, ".github/copilot-instructions.md"), "utf-8"),
+    ).toBe("KEEP_COPILOT");
   });
 
   it("never treats ignored dirs as important folders", () => {

@@ -23,10 +23,12 @@ Bộ tài liệu giúp hiểu **hệ thống** (yêu cầu, CLI, dữ liệu, ki
 | ------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | `init`        | Sinh context files lần đầu                            | [CLI_SPEC](./CLI_SPEC.md#2-subcommand-init), [GENERATED_FILES_SPEC](./GENERATED_FILES_SPEC.md)          |
 | `update`      | Refresh context files đã generated                    | [CLI_SPEC](./CLI_SPEC.md#3-subcommand-update), [DATA_MODEL](./DATA_MODEL.md#update-check-model)         |
-| `doctor`      | Kiểm tra readiness; `--fix` sửa context files an toàn | [CLI_SPEC](./CLI_SPEC.md#4-subcommand-doctor), [REQUIREMENTS](./REQUIREMENTS.md#fr-doctor--lệnh-doctor) |
-| `prompt`      | Chuẩn hóa instruction thô                             | [CLI_SPEC](./CLI_SPEC.md#5-subcommand-prompt), [PROMPT_SPEC](./PROMPT_SPEC.md)                          |
-| `config init` | Tạo `.ready-for-agents.json`                          | [CLI_SPEC](./CLI_SPEC.md#6-subcommand-config-init), [DATA_MODEL](./DATA_MODEL.md#6-config-model)        |
-| `index`       | Sinh context tree cache                               | [CLI_SPEC](./CLI_SPEC.md#7-subcommand-index), [DATA_MODEL](./DATA_MODEL.md#7-context-tree-model)        |
+| `diff`        | So sánh generated context với project hiện tại        | [CLI_SPEC](./CLI_SPEC.md#4-subcommand-diff), [REQUIREMENTS](./REQUIREMENTS.md#fr-diff--lệnh-diff)       |
+| `ci`          | Sinh GitHub Actions workflow                          | [CLI_SPEC](./CLI_SPEC.md#5-subcommand-ci), [REQUIREMENTS](./REQUIREMENTS.md#fr-ci--lệnh-ci)             |
+| `doctor`      | Kiểm tra readiness; `--fix` sửa context files an toàn | [CLI_SPEC](./CLI_SPEC.md#6-subcommand-doctor), [REQUIREMENTS](./REQUIREMENTS.md#fr-doctor--lệnh-doctor) |
+| `prompt`      | Chuẩn hóa instruction thô                             | [CLI_SPEC](./CLI_SPEC.md#7-subcommand-prompt--p), [PROMPT_SPEC](./PROMPT_SPEC.md)                       |
+| `config init` | Tạo `.ready-for-agents.json`                          | [CLI_SPEC](./CLI_SPEC.md#8-subcommand-config-init), [DATA_MODEL](./DATA_MODEL.md#6-config-model)        |
+| `index`       | Sinh context tree cache                               | [CLI_SPEC](./CLI_SPEC.md#9-subcommand-index), [DATA_MODEL](./DATA_MODEL.md#7-context-tree-model)        |
 
 ---
 
@@ -137,6 +139,6 @@ Chi tiết code: [SRC_WORKFLOW.md](./SRC_WORKFLOW.md).
 
 | Phiên bản code | Tài liệu                                                                |
 | -------------- | ----------------------------------------------------------------------- |
-| v0.2.x         | `init` + `update` + `doctor` + `prompt` + `config` + `index`; 256 tests |
+| v0.2.x         | `init` + `update` + `diff` + `ci` + `doctor` + `prompt` + `config` + `index`; 279 tests |
 
 Khi đổi behavior: cập nhật **REQUIREMENTS** + **CLI_SPEC** (+ detector/generated spec nếu liên quan) trong cùng PR với code.

@@ -158,13 +158,17 @@ describe("runUpdate", () => {
     expect(existsSync(join(dir, "COMMANDS.md"))).toBe(true);
   });
 
-  it("--all refreshes optional Cursor and Claude files", async () => {
+  it("--all refreshes optional Cursor, Claude, and Copilot files", async () => {
     const dir = makeProject("all", {
       ".cursor/rules/ready-for-agents.mdc": withGeneratedMarker(
         ".cursor/rules/ready-for-agents.mdc",
         "OLD_CURSOR\n",
       ),
       "CLAUDE.md": withGeneratedMarker("CLAUDE.md", "OLD_CLAUDE\n"),
+      ".github/copilot-instructions.md": withGeneratedMarker(
+        ".github/copilot-instructions.md",
+        "OLD_COPILOT\n",
+      ),
     });
 
     const code = await runUpdate({ cwd: dir, all: true });
@@ -176,6 +180,9 @@ describe("runUpdate", () => {
     expect(readFileSync(join(dir, "CLAUDE.md"), "utf-8")).toContain(
       "# CLAUDE.md",
     );
+    expect(
+      readFileSync(join(dir, ".github/copilot-instructions.md"), "utf-8"),
+    ).toContain("# GitHub Copilot Instructions");
   });
 
   it("--check returns 1 when selected files are missing", async () => {

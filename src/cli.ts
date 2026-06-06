@@ -10,6 +10,8 @@ import { runUpdate } from "./commands/update.js";
 import { runIndex } from "./commands/index.js";
 import { runConfigInit } from "./commands/config.js";
 import { runQuery } from "./commands/query.js";
+import { runCi } from "./commands/ci.js";
+import { runDiff } from "./commands/diff.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -42,6 +44,7 @@ program
   .option("--force", "Overwrite existing context files")
   .option("--cursor", "Also generate .cursor/rules/ready-for-agents.mdc")
   .option("--claude", "Also generate CLAUDE.md")
+  .option("--copilot", "Also generate .github/copilot-instructions.md")
   .option("--all", "Generate all optional agent files")
   .option("--index", "Also generate .ready-for-agents/context-tree.json")
   .option("--cwd <path>", "Project directory to scan", process.cwd())
@@ -51,6 +54,7 @@ program
       force?: boolean;
       cursor?: boolean;
       claude?: boolean;
+      copilot?: boolean;
       all?: boolean;
       index?: boolean;
       cwd: string;
@@ -60,6 +64,7 @@ program
         force: opts.force,
         cursor: opts.cursor,
         claude: opts.claude,
+        copilot: opts.copilot,
         all: opts.all,
         index: opts.index,
         cwd: opts.cwd,
@@ -79,6 +84,7 @@ program
   .option("--force", "With --fix, overwrite untracked context files")
   .option("--cursor", "With --fix, include .cursor/rules/ready-for-agents.mdc")
   .option("--claude", "With --fix, include CLAUDE.md")
+  .option("--copilot", "With --fix, include .github/copilot-instructions.md")
   .option("--all", "With --fix, include all optional agent files")
   .option("--index", "With --fix, generate .ready-for-agents/context-tree.json")
   .action(
@@ -90,6 +96,7 @@ program
       force?: boolean;
       cursor?: boolean;
       claude?: boolean;
+      copilot?: boolean;
       all?: boolean;
       index?: boolean;
     }) => {
@@ -101,6 +108,7 @@ program
         force: opts.force,
         cursor: opts.cursor,
         claude: opts.claude,
+        copilot: opts.copilot,
         all: opts.all,
         index: opts.index,
       });
@@ -118,6 +126,7 @@ program
   .option("--force", "Overwrite untracked files as well")
   .option("--cursor", "Also refresh .cursor/rules/ready-for-agents.mdc")
   .option("--claude", "Also refresh CLAUDE.md")
+  .option("--copilot", "Also refresh .github/copilot-instructions.md")
   .option("--all", "Refresh all optional agent files")
   .option("--index", "Also regenerate .ready-for-agents/context-tree.json")
   .option("--cwd <path>", "Project directory to update", process.cwd())
@@ -129,6 +138,7 @@ program
       force?: boolean;
       cursor?: boolean;
       claude?: boolean;
+      copilot?: boolean;
       all?: boolean;
       index?: boolean;
       cwd: string;
@@ -140,6 +150,7 @@ program
         force: opts.force,
         cursor: opts.cursor,
         claude: opts.claude,
+        copilot: opts.copilot,
         all: opts.all,
         index: opts.index,
         cwd: opts.cwd,
@@ -161,6 +172,51 @@ addPromptCommand(
     compact: true,
   },
 );
+
+program
+  .command("ci")
+  .description("Generate a GitHub Actions workflow for ready-for-agents checks")
+  .option("--dry-run", "Preview workflow content without writing files")
+  .option("--force", "Overwrite existing workflow file")
+  .option("--cwd <path>", "Project directory", process.cwd())
+  .action(async (opts: { dryRun?: boolean; force?: boolean; cwd: string }) => {
+    const code = await runCi({
+      dryRun: opts.dryRun,
+      force: opts.force,
+      cwd: opts.cwd,
+    });
+    process.exit(code);
+  });
+
+program
+  .command("diff")
+  .description("Show how generated context differs from the current project")
+  .option("--cwd <path>", "Project directory to compare", process.cwd())
+  .option("--json", "Print machine-readable JSON output")
+  .option("--cursor", "Include .cursor/rules/ready-for-agents.mdc")
+  .option("--claude", "Include CLAUDE.md")
+  .option("--copilot", "Include .github/copilot-instructions.md")
+  .option("--all", "Include all optional agent files")
+  .action(
+    async (opts: {
+      cwd: string;
+      json?: boolean;
+      cursor?: boolean;
+      claude?: boolean;
+      copilot?: boolean;
+      all?: boolean;
+    }) => {
+      const code = await runDiff({
+        cwd: opts.cwd,
+        json: opts.json,
+        cursor: opts.cursor,
+        claude: opts.claude,
+        copilot: opts.copilot,
+        all: opts.all,
+      });
+      process.exit(code);
+    },
+  );
 
 program
   .command("index")
@@ -220,10 +276,11 @@ program
 const config = program
   .command("config")
   .alias("c")
-  .description("Manage ready-for-agents project configuration");
+  .description("Manage project configuration");
 
 config
   .command("init")
+  .alias("i")
   .description("Create .ready-for-agents.json")
   .option("--dry-run", "Preview config without writing files")
   .option("--force", "Overwrite existing config")

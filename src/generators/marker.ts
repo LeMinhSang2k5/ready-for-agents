@@ -1,9 +1,11 @@
 import { createHash } from "node:crypto";
-import type { GeneratedFiles, OutputFile } from "../types.js";
+import type { GeneratedFileMap, OutputFile } from "../types.js";
 import { OUTPUT_FILES } from "../types.js";
 
-const MARKER_PATTERN =
+const HTML_MARKER_PATTERN =
   /\n?<!-- ready-for-agents:generated file="([^"]+)" hash="([a-f0-9]+)" -->\s*$/u;
+const HASH_MARKER_PATTERN =
+  /\n?# ready-for-agents:generated file="([^"]+)" hash="([a-f0-9]+)"\s*$/u;
 
 export type GeneratedMarker = {
   file: string;
@@ -11,7 +13,12 @@ export type GeneratedMarker = {
 };
 
 export function stripGeneratedMarker(content: string): string {
-  return content.replace(MARKER_PATTERN, "").replace(/\s+$/g, "") + "\n";
+  return (
+    content
+      .replace(HTML_MARKER_PATTERN, "")
+      .replace(HASH_MARKER_PATTERN, "")
+      .replace(/\s+$/g, "") + "\n"
+  );
 }
 
 export function hashGeneratedContent(content: string): string {
@@ -22,7 +29,8 @@ export function hashGeneratedContent(content: string): string {
 }
 
 export function readGeneratedMarker(content: string): GeneratedMarker | null {
-  const match = content.match(MARKER_PATTERN);
+  const match =
+    content.match(HTML_MARKER_PATTERN) ?? content.match(HASH_MARKER_PATTERN);
   if (!match) return null;
   return {
     file: match[1]!,
@@ -43,10 +51,14 @@ export function hasGeneratedMarker(
 export function withGeneratedMarker(file: OutputFile, content: string): string {
   const body = stripGeneratedMarker(content);
   const hash = hashGeneratedContent(body);
-  return `${body}<!-- ready-for-agents:generated file="${file}" hash="${hash}" -->\n`;
+  const marker =
+    file.endsWith(".yml") || file.endsWith(".yaml")
+      ? `# ready-for-agents:generated file="${file}" hash="${hash}"`
+      : `<!-- ready-for-agents:generated file="${file}" hash="${hash}" -->`;
+  return `${body}${marker}\n`;
 }
 
-export function addGeneratedMarkers(files: GeneratedFiles): GeneratedFiles {
+export function addGeneratedMarkers<T extends GeneratedFileMap>(files: T): T {
   const marked = { ...files };
   for (const name of OUTPUT_FILES) {
     if (marked[name] !== undefined) {

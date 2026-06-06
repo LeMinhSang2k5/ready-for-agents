@@ -11,6 +11,7 @@ export type ReadyForAgentsConfig = {
   files?: {
     cursor?: boolean;
     claude?: boolean;
+    copilot?: boolean;
     all?: boolean;
     index?: boolean;
   };
@@ -18,6 +19,7 @@ export type ReadyForAgentsConfig = {
     fix?: {
       cursor?: boolean;
       claude?: boolean;
+      copilot?: boolean;
       all?: boolean;
       force?: boolean;
       index?: boolean;
@@ -39,6 +41,7 @@ export type ResolvedReadyForAgentsConfig = {
   files: {
     cursor: boolean;
     claude: boolean;
+    copilot: boolean;
     all: boolean;
     index: boolean;
   };
@@ -46,6 +49,7 @@ export type ResolvedReadyForAgentsConfig = {
     fix: {
       cursor: boolean;
       claude: boolean;
+      copilot: boolean;
       all: boolean;
       force: boolean;
       index: boolean;
@@ -67,6 +71,7 @@ export const DEFAULT_CONFIG: ReadyForAgentsConfig = {
   files: {
     cursor: false,
     claude: false,
+    copilot: false,
     all: false,
     index: true,
   },

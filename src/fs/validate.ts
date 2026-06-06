@@ -26,7 +26,7 @@ export function validatePackageJsonFile(cwd: string): string | null {
   const packageJsonPath = join(cwd, "package.json");
 
   if (!existsSync(packageJsonPath)) {
-    return `No package.json found at ${packageJsonPath}. ready-for-agents init requires a Node.js project.`;
+    return `No package.json found at ${packageJsonPath}. rfa init requires a Node.js project.`;
   }
 
   try {

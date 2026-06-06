@@ -1,6 +1,6 @@
 # Đặc tả file sinh ra (Generated Files)
 
-Ba file Markdown core tại **root** project target. `init` cũng có thể sinh file agent-native tùy chọn cho Cursor và Claude Code, đồng thời sinh context tree cache `.ready-for-agents/context-tree.json` khi index bật.
+Ba file Markdown core tại **root** project target. `init` cũng có thể sinh file agent-native tùy chọn cho Cursor, Claude Code và GitHub Copilot; `ci` sinh GitHub Actions workflow; context tree cache `.ready-for-agents/context-tree.json` được sinh khi index bật.
 
 `doctor` hiện chỉ kiểm tra sự tồn tại của 3 file core (warn nếu thiếu). `doctor --fix` có thể tạo/refresh core, optional files, và context tree tùy config/flag.
 
@@ -19,17 +19,23 @@ Constants: `OUTPUT_FILES` trong `src/types.ts`.
 
 ### Generated marker
 
-Mỗi file generated kết thúc bằng một HTML comment marker:
+Mỗi file generated kết thúc bằng một content-hash marker. Markdown dùng HTML comment:
 
 ```md
 <!-- ready-for-agents:generated file="<output-file>" hash="<sha256-prefix>" -->
+```
+
+YAML dùng comment `#`:
+
+```yaml
+# ready-for-agents:generated file="<output-file>" hash="<sha256-prefix>"
 ```
 
 Quy tắc:
 
 - `file` là path output trong `OUTPUT_FILES` (ví dụ `AGENTS.md`).
 - `hash` là prefix 16 ký tự hex của SHA-256 trên nội dung file sau khi bỏ marker.
-- Marker không phải metadata user-facing; nó giúp `update` phân biệt file generated với file user tự viết.
+- Marker không phải metadata user-facing; nó giúp `update` / `diff` phân biệt file generated với file user tự viết.
 - Marker hợp lệ khi `file` đúng output path và `hash` khớp body hiện tại sau khi strip marker.
 - Nếu file tồn tại nhưng không có marker hợp lệ, `update` xem là `untracked` và bỏ qua trừ khi có `--force`.
 
@@ -129,7 +135,7 @@ không cả hai → hỏi user cách verify
 | ## Lint          | lint                                         |
 | ## Typecheck     | typecheck                                    |
 | ## Format        | format                                       |
-| ## Agent Context | `ready-for-agents query` và `index` workflow |
+| ## Agent Context | `rfa query` và `index` workflow |
 
 ### Section script pattern
 
@@ -170,6 +176,18 @@ Thiếu file → **warn**, không fail (trừ khi thiếu package.json).
 
 **Mục đích:** Claude Code guidance, gồm project context, cách làm việc, file tránh sửa, verification, và response expectations.
 
+### `.github/copilot-instructions.md`
+
+**Flag:** `init --copilot` hoặc `init --all`
+
+**Mục đích:** GitHub Copilot repository instructions cho Copilot Chat, code review và coding agent workflows. Nội dung gồm project context, working rules, verification và response expectations.
+
+### `.github/workflows/ready-for-agents.yml`
+
+**Command:** `ci`
+
+**Mục đích:** GitHub Actions workflow chạy `rfa doctor --json` và `rfa diff --json` trên push / pull request để kiểm tra readiness và độ mới của context generated.
+
 ---
 
 ## 7. Context tree cache
@@ -199,7 +217,7 @@ type ContextTree = {
   };
   files: Array<{
     path: OutputFile;
-    kind: "core" | "cursor" | "claude";
+    kind: "core" | "cursor" | "claude" | "copilot" | "ci";
     exists: boolean;
     hash?: string;
     bytes?: number;
@@ -230,7 +248,7 @@ Quy tắc:
 - Không có generated marker HTML vì đây là JSON cache.
 - `hash` là SHA-256 prefix 16 ký tự.
 - `id` được tạo từ file path + heading + line start để tránh trùng heading.
-- `anchor`, `lineStart`, `lineEnd`, `summary`, `keywords`, `commands` là dữ liệu chính cho `ready-for-agents query`.
+- `anchor`, `lineStart`, `lineEnd`, `summary`, `keywords`, `commands` là dữ liệu chính cho `rfa query`.
 - Nếu file chưa tồn tại: `exists: false`, `sections: []`.
 
 ---

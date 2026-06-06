@@ -1,4 +1,4 @@
-<pre align="center">
+```
 ██████╗ ███████╗ █████╗ ██████╗ ██╗   ██╗    ███████╗ ██████╗ ██████╗
 ██╔══██╗██╔════╝██╔══██╗██╔══██╗╚██╗ ██╔╝    ██╔════╝██╔═══██╗██╔══██╗
 ██████╔╝█████╗  ███████║██║  ██║ ╚████╔╝     █████╗  ██║   ██║██████╔╝
@@ -12,20 +12,11 @@
 ██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║   ╚════██║
 ██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║   ███████║
 ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝
-</pre>
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/ready-for-agents"><img src="https://img.shields.io/npm/v/ready-for-agents?style=for-the-badge&label=npm&labelColor=555555&color=CB3837&logo=npm&logoColor=white" alt="npm version"></a>
-  <a href="https://www.npmjs.com/package/ready-for-agents"><img src="https://img.shields.io/npm/dm/ready-for-agents?style=for-the-badge&label=npm&labelColor=555555&color=47A248" alt="npm downloads per month"></a>
-  <a href="https://www.npmjs.com/package/ready-for-agents"><img src="https://img.shields.io/node/v/ready-for-agents?style=for-the-badge&label=node&labelColor=555555&color=339933&logo=node.js&logoColor=white" alt="node version"></a>
-  <a href="https://github.com/LeMinhSang2k5/ready-for-agents/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/ready-for-agents?style=for-the-badge&label=license&labelColor=555555&color=brightgreen" alt="MIT license"></a>
-  <a href="https://github.com/LeMinhSang2k5/ready-for-agents"><img src="https://img.shields.io/github/stars/LeMinhSang2k5/ready-for-agents?style=for-the-badge&label=stars&labelColor=555555&color=yellow&logo=github" alt="GitHub stars"></a>
-  <br>
-  <a href="https://github.com/LeMinhSang2k5/ready-for-agents/tree/main/doc/guide"><img src="https://img.shields.io/badge/DOCS-GUIDE-yellow?style=for-the-badge&labelColor=555555" alt="Documentation"></a>
-  <a href="https://github.com/LeMinhSang2k5/ready-for-agents"><img src="https://img.shields.io/badge/GITHUB-REPOSITORY-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"></a>
-  <a href="https://github.com/LeMinhSang2k5"><img src="https://img.shields.io/badge/BUILT%20BY-LeMinhSang-purple?style=for-the-badge&labelColor=555555" alt="Built by LeMinhSang"></a>
-  <a href="./README.vi.md"><img src="https://img.shields.io/badge/LANG-TIẾNG%20VIỆT-red?style=for-the-badge&labelColor=555555" alt="Tiếng Việt"></a>
-</p>
+```
+
+  
+
 
 ---
 
@@ -38,48 +29,64 @@ A small CLI that scans your Node.js project and generates context files for **Cu
 ## Quick start
 
 ```bash
-npx ready-for-agents init
+npx --package ready-for-agents rfa init
 ```
 
 Preview first (recommended):
 
 ```bash
-npx ready-for-agents init --dry-run
+npx --package ready-for-agents rfa init --dry-run
 ```
 
-Generate native agent files for Cursor and Claude Code:
+Generate native agent files for Cursor, Claude Code, and GitHub Copilot:
 
 ```bash
-npx ready-for-agents init --cursor
-npx ready-for-agents init --claude
-npx ready-for-agents init --all
+npx --package ready-for-agents rfa init --cursor
+npx --package ready-for-agents rfa init --claude
+npx --package ready-for-agents rfa init --copilot
+npx --package ready-for-agents rfa init --all
 ```
 
 Refresh generated context files after your project changes:
 
 ```bash
-npx ready-for-agents update
-npx ready-for-agents update --check
-npx ready-for-agents update --check --json
-npx ready-for-agents update --all
+npx --package ready-for-agents rfa update
+npx --package ready-for-agents rfa update --check
+npx --package ready-for-agents rfa update --check --json
+npx --package ready-for-agents rfa update --all
+```
+
+See how generated context differs from the current project:
+
+```bash
+npx --package ready-for-agents rfa diff
+npx --package ready-for-agents rfa diff --json
+npx --package ready-for-agents rfa diff --all
 ```
 
 Check whether a project is ready for AI agents (no file writes):
 
 ```bash
-npx ready-for-agents doctor
-npx ready-for-agents doctor --fix --dry-run
-npx ready-for-agents doctor --fix
-npx ready-for-agents doctor --cwd /path/to/your-project
+npx --package ready-for-agents rfa doctor
+npx --package ready-for-agents rfa doctor --fix --dry-run
+npx --package ready-for-agents rfa doctor --fix
+npx --package ready-for-agents rfa doctor --cwd /path/to/your-project
+```
+
+Generate a GitHub Actions workflow for readiness and context freshness checks:
+
+```bash
+npx --package ready-for-agents rfa ci
+npx --package ready-for-agents rfa ci --dry-run
 ```
 
 Turn a rough instruction into a compact, agent-ready prompt (no AI API):
 
 ```bash
-npx ready-for-agents prompt "kiểm tra doctor --json giúp tôi"
-npx ready-for-agents prompt "kiểm tra doctor --json giúp tôi" --context --compact
-npx ready-for-agents prompt --target en "sửa lỗi doctor --json giúp tôi"
-echo "review api. run pnpm test" | npx ready-for-agents prompt --stdin --json
+npx --package ready-for-agents rfa prompt "kiểm tra doctor --json giúp tôi"
+npx --package ready-for-agents rfa prompt "kiểm tra doctor --json giúp tôi" --context --compact
+npx --package ready-for-agents rfa prompt --target en "sửa lỗi doctor --json giúp tôi"
+echo "review api. run pnpm test" | npx --package ready-for-agents rfa prompt --stdin --json
 ```
 
 After global install, the short daily form is:
@@ -91,35 +98,39 @@ rfa p "kiểm tra doctor --json hoạt động đúng chưa"
 Create a local config so you can type fewer flags:
 
 ```bash
-npx ready-for-agents config init
+npx --package ready-for-agents rfa config init
 ```
 
 Build a compact context tree cache for generated agent files:
 
 ```bash
-npx ready-for-agents index
-npx ready-for-agents index --json
+npx --package ready-for-agents rfa index
+npx --package ready-for-agents rfa index --json
 ```
 
 Ask the context tree which sections an agent should read first:
 
 ```bash
-npx ready-for-agents query "how should I verify this change?"
-npx ready-for-agents query "kiểm tra doctor hoạt động đúng chưa" --json
+npx --package ready-for-agents rfa query "how should I verify this change?"
+npx --package ready-for-agents rfa query "kiểm tra doctor hoạt động đúng chưa" --json
 ```
 
 ### Command map
 
+Use the full command when teaching, documenting, or debugging. Use the alias when you are working daily.
 
-| Command       | Use it when you want to...                              | Writes files?                                   |
-| ------------- | ------------------------------------------------------- | ----------------------------------------------- |
-| `init`        | create context files for a project                      | Yes, unless `--dry-run`                         |
-| `update`      | refresh generated context after the repo changes        | Yes, unless `--dry-run`, `--check`, or `--json` |
-| `doctor`      | check whether a project is AI-agent-ready               | Only with `--fix`                               |
-| `prompt`      | turn a rough instruction into a structured agent prompt | No                                              |
-| `config init` | create `.ready-for-agents.json` defaults                | Yes, unless `--dry-run`                         |
-| `index`       | build `.ready-for-agents/context-tree.json`             | Yes, unless `--dry-run` or `--json`             |
-| `query`       | select relevant context sections for a task             | No                                              |
+
+| Full command      | Short form | Use it when you want to...                              | Writes files?                                   |
+| ----------------- | ---------- | ------------------------------------------------------- | ----------------------------------------------- |
+| `rfa init`        | `rfa i`    | create context files for a project                      | Yes, unless `--dry-run`                         |
+| `rfa update`      | `rfa u`    | refresh generated context after the repo changes        | Yes, unless `--dry-run`, `--check`, or `--json` |
+| `rfa doctor`      | `rfa d`    | check whether a project is AI-agent-ready               | Only with `--fix`                               |
+| `rfa diff`        | —          | compare generated context with the current project      | No                                              |
+| `rfa ci`          | —          | create a GitHub Actions workflow for agent checks       | Yes, unless `--dry-run`                         |
+| `rfa prompt`      | `rfa p`    | turn a rough instruction into a structured agent prompt | No                                              |
+| `rfa config init` | `rfa c i`  | create `.ready-for-agents.json` defaults                | Yes, unless `--dry-run`                         |
+| `rfa index`       | `rfa x`    | build `.ready-for-agents/context-tree.json`             | Yes, unless `--dry-run` or `--json`             |
+| `rfa query`       | `rfa q`    | select relevant context sections for a task             | No                                              |
 
 
 ---
@@ -145,15 +156,17 @@ AI agents work best when they already know:
 After `init`, your project root can include:
 
 
-| File                                  | Purpose                                                       |
-| ------------------------------------- | ------------------------------------------------------------- |
-| `AGENTS.md`                           | How agents should work in this repo (rules, folders, testing) |
-| `PROJECT_CONTEXT.md`                  | Stack, package manager, dependencies, notes                   |
-| `COMMANDS.md`                         | Dev, build, test, lint, and related scripts                   |
-| `.cursor/rules/ready-for-agents.mdc`  | Optional Cursor project rule (`init --cursor` or `--all`)     |
-| `CLAUDE.md`                           | Optional Claude Code guidance (`init --claude` or `--all`)    |
-| `.ready-for-agents/context-tree.json` | Compact context tree cache for generated files                |
-| `.ready-for-agents.json`              | Optional project config (`config init`)                       |
+| File                                     | Purpose                                                       |
+| ---------------------------------------- | ------------------------------------------------------------- |
+| `AGENTS.md`                              | How agents should work in this repo (rules, folders, testing) |
+| `PROJECT_CONTEXT.md`                     | Stack, package manager, dependencies, notes                   |
+| `COMMANDS.md`                            | Dev, build, test, lint, and related scripts                   |
+| `.cursor/rules/ready-for-agents.mdc`     | Optional Cursor project rule (`init --cursor` or `--all`)     |
+| `CLAUDE.md`                              | Optional Claude Code guidance (`init --claude` or `--all`)    |
+| `.github/copilot-instructions.md`        | Optional GitHub Copilot repository instructions               |
+| `.github/workflows/ready-for-agents.yml` | Optional GitHub Actions workflow (`ci`)                       |
+| `.ready-for-agents/context-tree.json`    | Compact context tree cache for generated files                |
+| `.ready-for-agents.json`                 | Optional project config (`config init`)                       |
 
 
 ```text
@@ -173,21 +186,23 @@ my-app/
 **One-off (no install):**
 
 ```bash
-npx ready-for-agents init
+npx --package ready-for-agents rfa init
 ```
 
 **pnpm:**
 
 ```bash
-pnpm dlx ready-for-agents init
+pnpm dlx --package ready-for-agents rfa init
 ```
 
 **Global:**
 
 ```bash
 npm install -g ready-for-agents
-ready-for-agents init
+rfa init
 ```
+
+Package name is `ready-for-agents`; the daily CLI binary is `rfa`. The legacy `ready-for-agents` binary is still published for compatibility.
 
 Requires **Node.js 18+**.
 
@@ -198,7 +213,7 @@ Requires **Node.js 18+**.
 ### Generate context (current directory)
 
 ```bash
-ready-for-agents init
+rfa init
 ```
 
 ### Scan another project
@@ -206,28 +221,29 @@ ready-for-agents init
 Use an **absolute path** (do not prefix with `cd`):
 
 ```bash
-ready-for-agents init --cwd /Users/you/projects/my-app
+rfa init --cwd /Users/you/projects/my-app
 ```
 
 ### Preview without writing files
 
 ```bash
-ready-for-agents init --dry-run
+rfa init --dry-run
 ```
 
 ### Overwrite existing generated files
 
 ```bash
-ready-for-agents init --force
+rfa init --force
 ```
 
 ### Generate native agent files
 
 ```bash
-ready-for-agents init --cursor
-ready-for-agents init --claude
-ready-for-agents init --all
-ready-for-agents init --index
+rfa init --cursor
+rfa init --claude
+rfa init --copilot
+rfa init --all
+rfa init --index
 ```
 
 By default, `init`, `update`, and `doctor --fix` also generate `.ready-for-agents/context-tree.json`. Disable it in `.ready-for-agents.json` with `"files": { "index": false }`, then re-enable per command with `--index`.
@@ -237,21 +253,45 @@ By default, `init`, `update`, and `doctor --fix` also generate `.ready-for-agent
 `update` regenerates selected context files. It refreshes files previously generated by `ready-for-agents`, creates missing selected files, and skips user-authored files unless you pass `--force`.
 
 ```bash
-ready-for-agents update
-ready-for-agents update --dry-run
-ready-for-agents update --check
-ready-for-agents update --check --json
-ready-for-agents update --all
-ready-for-agents update --index
-ready-for-agents update --force
-ready-for-agents update --cwd /Users/you/projects/my-app
+rfa update
+rfa update --dry-run
+rfa update --check
+rfa update --check --json
+rfa update --all
+rfa update --index
+rfa update --force
+rfa update --cwd /Users/you/projects/my-app
+```
+
+### Compare generated context (`diff`)
+
+`diff` compares the generated context files for the current project with what is already on disk. It does not write files.
+
+```bash
+rfa diff
+rfa diff --json
+rfa diff --all
+rfa diff --cwd /Users/you/projects/my-app
+```
+
+Use `rfa update` to refresh tracked generated files after reviewing the diff.
+
+### Generate GitHub Actions workflow (`ci`)
+
+`ci` creates `.github/workflows/ready-for-agents.yml`, which checks readiness and generated context freshness on push and pull requests.
+
+```bash
+rfa ci
+rfa ci --dry-run
+rfa ci --force
+rfa ci --cwd /Users/you/projects/my-app
 ```
 
 ### Combine flags
 
 ```bash
-ready-for-agents init --cwd ./my-app --dry-run
-ready-for-agents init --cwd ./my-app --force
+rfa init --cwd ./my-app --dry-run
+rfa init --cwd ./my-app --force
 ```
 
 ### CLI options
@@ -263,6 +303,7 @@ ready-for-agents init --cwd ./my-app --force
 | `--force`      | Overwrite `AGENTS.md`, `PROJECT_CONTEXT.md`, `COMMANDS.md` if they exist |
 | `--cursor`     | Also generate `.cursor/rules/ready-for-agents.mdc`                       |
 | `--claude`     | Also generate `CLAUDE.md`                                                |
+| `--copilot`    | Also generate `.github/copilot-instructions.md`                          |
 | `--all`        | Generate all optional agent files                                        |
 | `--index`      | Generate `.ready-for-agents/context-tree.json`                           |
 | `--cwd <path>` | Project directory to scan (default: current working directory)           |
@@ -279,25 +320,26 @@ ready-for-agents init --cwd ./my-app --force
 | `--force`      | Overwrite untracked existing files instead of skipping them              |
 | `--cursor`     | Also refresh `.cursor/rules/ready-for-agents.mdc`                        |
 | `--claude`     | Also refresh `CLAUDE.md`                                                 |
+| `--copilot`    | Also refresh `.github/copilot-instructions.md`                           |
 | `--all`        | Refresh all optional agent files                                         |
 | `--index`      | Regenerate `.ready-for-agents/context-tree.json`                         |
 | `--cwd <path>` | Project directory to update (default: current working directory)         |
 
 
-Generated files include a small HTML comment marker with a content hash. `update` uses that marker to tell generated files apart from files you wrote by hand, and skips files whose marker hash no longer matches the file body.
+Generated files include a small content-hash marker. Markdown uses an HTML comment marker; YAML uses a `#` comment marker. `update` and `diff` use that marker to tell generated files apart from files you wrote by hand, and skip files whose marker hash no longer matches the file body.
 
 ### Validate or fix project readiness (`doctor`)
 
 Runs static checks by default. With `--fix`, it creates missing context files, refreshes stale generated files, and skips user-authored files unless you pass `--force`.
 
 ```bash
-ready-for-agents doctor
-ready-for-agents doctor --fix --dry-run
-ready-for-agents doctor --fix
-ready-for-agents doctor --fix --json
-ready-for-agents doctor --fix --index
-ready-for-agents doctor --cwd /Users/you/projects/my-app
-ready-for-agents doctor --json
+rfa doctor
+rfa doctor --fix --dry-run
+rfa doctor --fix
+rfa doctor --fix --json
+rfa doctor --fix --index
+rfa doctor --cwd /Users/you/projects/my-app
+rfa doctor --json
 ```
 
 
@@ -310,6 +352,7 @@ ready-for-agents doctor --json
 | `--force`      | With `--fix`, overwrite untracked existing files                |
 | `--cursor`     | With `--fix`, include `.cursor/rules/ready-for-agents.mdc`      |
 | `--claude`     | With `--fix`, include `CLAUDE.md`                               |
+| `--copilot`    | With `--fix`, include `.github/copilot-instructions.md`         |
 | `--all`        | With `--fix`, include all optional agent files                  |
 | `--index`      | With `--fix`, generate `.ready-for-agents/context-tree.json`    |
 
@@ -325,15 +368,15 @@ If `--cwd` does not exist or is not a directory, `doctor` **stops after the firs
 Turn rough instructions into compact, structured prompts — **static only**, no translation model in MVP.
 
 ```bash
-ready-for-agents prompt "kiểm tra doctor --json giúp tôi"
-ready-for-agents prompt --target en "sửa lỗi doctor --json giúp tôi"
-ready-for-agents prompt --target vi "Explain what prompt does"
-ready-for-agents prompt "kiểm tra doctor --json" --context --compact
-ready-for-agents p "kiểm tra doctor --json"
-ready-for-agents prompt --stdin
-ready-for-agents prompt --file task.txt
-ready-for-agents prompt --cwd /Users/you/projects/my-app "Explain this task"
-ready-for-agents prompt
+rfa prompt "kiểm tra doctor --json giúp tôi"
+rfa prompt --target en "sửa lỗi doctor --json giúp tôi"
+rfa prompt --target vi "Explain what prompt does"
+rfa prompt "kiểm tra doctor --json" --context --compact
+rfa p "kiểm tra doctor --json"
+rfa prompt --stdin
+rfa prompt --file task.txt
+rfa prompt --cwd /Users/you/projects/my-app "Explain this task"
+rfa prompt
 ```
 
 
@@ -342,7 +385,7 @@ ready-for-agents prompt
 | `[text]`              | Instruction (positional)                                |
 | `--stdin`             | Read instruction from stdin                             |
 | `--file <path>`       | Read instruction from file                              |
-| `--target <auto       | en                                                      |
+| `--target <auto\|en\|vi>` | Response language instruction                       |
 | `--context`           | Include relevant context sections from context-tree     |
 | `--no-context`        | Disable relevant context lookup                         |
 | `--compact`           | Render a shorter prompt                                 |
@@ -368,9 +411,9 @@ Spec: `[doc/guide/PROMPT_SPEC.md](./doc/guide/PROMPT_SPEC.md)`.
 Use config when you repeatedly want the same optional files, prompt target, or context tree output path:
 
 ```bash
-ready-for-agents config init
-ready-for-agents config init --dry-run
-ready-for-agents config init --force
+rfa config init
+rfa config init --dry-run
+rfa config init --force
 ```
 
 Default config:
@@ -381,6 +424,7 @@ Default config:
   "files": {
     "cursor": false,
     "claude": false,
+    "copilot": false,
     "all": false,
     "index": true
   },
@@ -410,11 +454,11 @@ The current config filename is `.ready-for-agents.json`. The old `.agent-context
 `index` reads generated files and writes a compact tree of headings, anchors, hashes, keywords, commands, summaries, and estimated tokens. Agents or CI can read this cache first instead of repeatedly scanning every Markdown file.
 
 ```bash
-ready-for-agents index
-ready-for-agents index --dry-run
-ready-for-agents index --json
-ready-for-agents index --output .cache/agent-context-tree.json
-ready-for-agents index --cwd /Users/you/projects/my-app
+rfa index
+rfa index --dry-run
+rfa index --json
+rfa index --output .cache/agent-context-tree.json
+rfa index --cwd /Users/you/projects/my-app
 ```
 
 Output path defaults to `.ready-for-agents/context-tree.json` and can be changed in config.
@@ -424,23 +468,23 @@ Output path defaults to `.ready-for-agents/context-tree.json` and can be changed
 `query` uses `.ready-for-agents/context-tree.json` when present, or scans existing generated context files live. It returns section references, line ranges, short summaries, reasons, and estimated tokens so an agent can read only the most relevant context first.
 
 ```bash
-ready-for-agents query "how should I verify this change?"
-ready-for-agents query "kiểm tra doctor hoạt động đúng chưa" --limit 4
-ready-for-agents query "show stack and dependencies" --json
-ready-for-agents query "fix build" --cwd /Users/you/projects/my-app
+rfa query "how should I verify this change?"
+rfa query "kiểm tra doctor hoạt động đúng chưa" --limit 4
+rfa query "show stack and dependencies" --json
+rfa query "fix build" --cwd /Users/you/projects/my-app
 ```
 
 Recommended flow:
 
 ```bash
-ready-for-agents init --index
-ready-for-agents query "describe your task"
+rfa init --index
+rfa query "describe your task"
 ```
 
 For CI, use JSON output:
 
 ```bash
-ready-for-agents doctor --json
+rfa doctor --json
 ```
 
 ```json
@@ -523,7 +567,7 @@ Generated:
 `doctor` (wrong `--cwd` — early exit):
 
 ```text
-ready-for-agents doctor
+rfa doctor
 
 Checks:
   ✗ Project directory found (/wrong/path does not exist)
@@ -534,7 +578,7 @@ Score: 0/1 · 0 warnings · 1 failure
 `doctor` (valid project, some context files missing):
 
 ```text
-ready-for-agents doctor
+rfa doctor
 
 Checks:
   ✓ Project directory found
@@ -624,7 +668,7 @@ Checks for: `src/`, `app/`, `pages/`, `components/`, `lib/`, `tests/` (at projec
 
 ## How it works
 
-`**init`** — detect → generate Markdown:
+`**init**` — detect → generate Markdown:
 
 ```mermaid
 flowchart LR
@@ -669,6 +713,8 @@ pnpm dev init --dry-run
 pnpm dev init --cwd /path/to/your-project --dry-run
 pnpm dev doctor --cwd /path/to/your-project
 pnpm dev doctor --fix --dry-run --cwd /path/to/your-project
+pnpm dev diff --cwd /path/to/your-project
+pnpm dev ci --dry-run --cwd /path/to/your-project
 pnpm dev config init --dry-run --cwd /path/to/your-project
 pnpm dev index --dry-run --cwd /path/to/your-project
 pnpm dev query "how should I verify this change?" --cwd /path/to/your-project
@@ -688,20 +734,21 @@ Release: [CHANGELOG.md](./CHANGELOG.md) · Publish: [PUBLISH_CHECKLIST.md](./PUB
 
 ## Roadmap
 
-- `ready-for-agents doctor` — validate project readiness (static checks, no writes)
+- `rfa doctor` — validate project readiness (static checks, no writes)
 - `doctor --fix` — safely generate/refresh context files
 - `doctor --json` — machine-readable output for CI
-- `ready-for-agents prompt` — structure rough instructions, --file, and interactive mode (no AI API)
+- `rfa prompt` — structure rough instructions, --file, and interactive mode (no AI API)
 - `prompt --target auto|en|vi` — choose response language instruction
-- `.cursor/rules` and `CLAUDE.md` optional generators
-- `ready-for-agents update` — refresh generated context files after repo changes
+- `.cursor/rules`, `CLAUDE.md`, and `.github/copilot-instructions.md` optional generators
+- `rfa update` — refresh generated context files after repo changes
+- `rfa diff` — compare generated context with the current project
+- `rfa ci` — generate GitHub Actions checks for readiness and context freshness
 - `.ready-for-agents.json` — project defaults for optional files, prompt target, and index output
-- `ready-for-agents index` — compact context tree cache for generated agent files
-- `ready-for-agents query` — select relevant context sections before full reads
-- `prompt --style` (v0.2)
-- `prompt --ai` opt-in rewrite (v0.3)
+- `rfa index` — compact context tree cache for generated agent files
+- `rfa query` — select relevant context sections before full reads
+- `prompt --style`
+- `prompt --ai` opt-in rewrite
 - Python / FastAPI / Django support
-- GitHub Action to keep context in sync
 - Optional AI-enhanced summaries
 
 ---

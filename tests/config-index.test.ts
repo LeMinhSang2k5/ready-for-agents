@@ -87,6 +87,7 @@ describe("runConfigInit", () => {
     expect(existsSync(join(dir, CONFIG_FILE))).toBe(false);
     expect(output()).toContain("rfa config init");
     expect(output()).toContain(CONFIG_FILE);
+    expect(output()).toContain('"copilot": false');
     expect(output()).toContain(DEFAULT_INDEX_OUTPUT);
     expect(output()).toContain("Dry run");
   });
@@ -134,7 +135,7 @@ describe("config defaults in commands", () => {
   it("lets config turn on optional files and choose index output", async () => {
     const dir = makeProject("config-init", {
       [CONFIG_FILE]: JSON.stringify({
-        files: { cursor: true, claude: true, index: true },
+        files: { cursor: true, claude: true, copilot: true, index: true },
         index: { output: ".cache/ready-for-agents-tree.json" },
       }),
     });
@@ -146,6 +147,7 @@ describe("config defaults in commands", () => {
       true,
     );
     expect(existsSync(join(dir, "CLAUDE.md"))).toBe(true);
+    expect(existsSync(join(dir, ".github/copilot-instructions.md"))).toBe(true);
     expect(existsSync(join(dir, ".cache/ready-for-agents-tree.json"))).toBe(
       true,
     );

@@ -62,6 +62,8 @@ export const OUTPUT_FILES = [
   "COMMANDS.md",
   ".cursor/rules/ready-for-agents.mdc",
   "CLAUDE.md",
+  ".github/copilot-instructions.md",
+  ".github/workflows/ready-for-agents.yml",
 ] as const;
 
 export type OutputFile = (typeof OUTPUT_FILES)[number];
@@ -69,4 +71,6 @@ export type OutputFile = (typeof OUTPUT_FILES)[number];
 export type GeneratedFiles = Partial<Record<OutputFile, string>> &
   Record<"AGENTS.md" | "PROJECT_CONTEXT.md" | "COMMANDS.md", string>;
 
-export type GeneratePreset = "core" | "cursor" | "claude";
+export type GeneratedFileMap = Partial<Record<OutputFile, string>>;
+
+export type GeneratePreset = "core" | "cursor" | "claude" | "copilot";

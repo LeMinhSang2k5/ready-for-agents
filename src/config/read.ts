@@ -111,6 +111,7 @@ function resolveConfig(
     files: {
       cursor: readBoolean(raw?.files?.cursor, false),
       claude: readBoolean(raw?.files?.claude, false),
+      copilot: readBoolean(raw?.files?.copilot, false),
       all: readBoolean(raw?.files?.all, false),
       index: readBoolean(raw?.files?.index, true),
     },
@@ -118,6 +119,7 @@ function resolveConfig(
       fix: {
         cursor: readBoolean(raw?.doctor?.fix?.cursor, false),
         claude: readBoolean(raw?.doctor?.fix?.claude, false),
+        copilot: readBoolean(raw?.doctor?.fix?.copilot, false),
         all: readBoolean(raw?.doctor?.fix?.all, false),
         force: readBoolean(raw?.doctor?.fix?.force, false),
         index: readBoolean(raw?.doctor?.fix?.index, true),

@@ -17,8 +17,8 @@
 | **Related dev scripts**    | Script `dev:*` hoặc được gọi trong lệnh `dev` chính                                           |
 | **Important folders**      | `src`, `app`, `pages`, `components`, `lib`, `tests` nếu tồn tại ở root                        |
 | **Ignored scan dirs**      | Tên folder không nên quét/sửa (`node_modules`, …)                                             |
-| **Output file**            | Một file trong `OUTPUT_FILES`, gồm 3 core files và optional Cursor/Claude files               |
-| **Generated marker**       | HTML comment `ready-for-agents:generated` ở cuối file, kèm `file` và `hash`                   |
+| **Output file**            | Một file trong `OUTPUT_FILES`, gồm 3 core files, optional agent files và workflow CI          |
+| **Generated marker**       | Comment `ready-for-agents:generated` ở cuối file, kèm `file` và `hash`                        |
 | **Tracked generated file** | File có generated marker đúng path và hash khớp body, được `update` refresh                   |
 | **Untracked file**         | File output đã tồn tại nhưng không có marker hợp lệ; `update` skip trừ khi `--force`          |
 | **Dry run**                | `init --dry-run`: preview đầy đủ, không `writeFileSync`                                       |
@@ -29,6 +29,8 @@
 | **`doctor --fix`**         | Chế độ tạo missing context files và refresh outdated generated files                          |
 | **`update --check`**       | Chế độ kiểm tra context files đã up to date chưa; không ghi file                              |
 | **`update --json`**        | Chế độ in `UpdateCheckJsonOutput` trên stdout; không ghi file                                 |
+| **`diff`**                 | Chế độ so sánh generated context với project hiện tại; không ghi file                         |
+| **`ci`**                   | Chế độ sinh GitHub Actions workflow cho readiness và context freshness checks                 |
 | **Fail-fast (cwd)**        | cwd sai → chỉ 1 check, không chạy 10 check còn lại                                            |
 | **Score line**             | `Score: P/T · W warnings · F failures`                                                        |
 | **MVP**                    | Node.js, init/update/doctor/prompt/config/index, không AI API                                 |

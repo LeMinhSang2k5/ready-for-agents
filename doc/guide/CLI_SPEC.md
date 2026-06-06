@@ -1,6 +1,8 @@
 # Đặc tả CLI
 
-Binary: `ready-for-agents` và alias ngắn `rfa` (`dist/cli.js` sau build).
+Binary chính: `rfa` (`dist/cli.js` sau build).
+
+Binary legacy: `ready-for-agents` vẫn được publish để tương thích với user đã cài bản cũ. Tài liệu, ví dụ và help text nên dùng `rfa` trước.
 
 Framework CLI: [commander](https://github.com/tj/commander.js) v13.
 
@@ -10,11 +12,26 @@ Framework CLI: [commander](https://github.com/tj/commander.js) v13.
 
 | Thuộc tính         | Giá trị                            |
 | ------------------ | ---------------------------------- |
-| `name`             | `ready-for-agents`                 |
+| `name`             | `rfa`                              |
 | `--version` / `-V` | Đọc từ `package.json` cạnh `dist/` |
 | `--help` / `-h`    | Help theo subcommand               |
 
 Không có global `--cwd`; mỗi subcommand tự khai báo.
+
+### Alias map
+
+| Lệnh đầy đủ       | Alias     | Ghi chú                                      |
+| ----------------- | --------- | -------------------------------------------- |
+| `rfa init`        | `rfa i`   | Tạo context files                            |
+| `rfa update`      | `rfa u`   | Refresh generated files                      |
+| `rfa doctor`      | `rfa d`   | Kiểm tra readiness                           |
+| `rfa diff`        | —         | So sánh generated context với project hiện tại |
+| `rfa ci`          | —         | Tạo GitHub Actions workflow                  |
+| `rfa prompt`      | `rfa p`   | Dạng ngắn có default `--context --compact`   |
+| `rfa config`      | `rfa c`   | Nhóm lệnh config                             |
+| `rfa config init` | `rfa c i` | Tạo `.ready-for-agents.json`                 |
+| `rfa index`       | `rfa x`   | Build context tree                           |
+| `rfa query`       | `rfa q`   | Chọn section context liên quan cho một task  |
 
 ---
 
@@ -30,11 +47,12 @@ Không có global `--cwd`; mỗi subcommand tự khai báo.
 | `--force`      | boolean | `false`         | Ghi đè file output đã tồn tại                  |
 | `--cursor`     | boolean | `false`         | Sinh thêm `.cursor/rules/ready-for-agents.mdc` |
 | `--claude`     | boolean | `false`         | Sinh thêm `CLAUDE.md`                          |
+| `--copilot`    | boolean | `false`         | Sinh thêm `.github/copilot-instructions.md`    |
 | `--all`        | boolean | `false`         | Sinh toàn bộ file agent tùy chọn               |
 | `--index`      | boolean | config          | Sinh `.ready-for-agents/context-tree.json`     |
 | `--cwd <path>` | string  | `process.cwd()` | Thư mục project (resolve absolute)             |
 
-Nếu `.ready-for-agents.json` tồn tại, `init` dùng `files.cursor`, `files.claude`, `files.all`, `files.index` làm default. Flag CLI được ưu tiên hơn config.
+Nếu `.ready-for-agents.json` tồn tại, `init` dùng `files.cursor`, `files.claude`, `files.copilot`, `files.all`, `files.index` làm default. Flag CLI được ưu tiên hơn config.
 
 ### Exit codes
 
@@ -45,7 +63,7 @@ Nếu `.ready-for-agents.json` tồn tại, `init` dùng `files.cursor`, `files.
 
 ### Output (stdout)
 
-**Header:** `ready-for-agents` (bold qua picocolors)
+**Header:** `rfa init` (bold qua picocolors)
 
 **Block Detected:**
 
@@ -75,13 +93,14 @@ Detected:
 ### Ví dụ
 
 ```bash
-ready-for-agents init
-ready-for-agents init --dry-run
-ready-for-agents init --cursor
-ready-for-agents init --claude
-ready-for-agents init --all
-ready-for-agents init --index
-ready-for-agents init --cwd /absolute/path/to/app --force
+rfa init
+rfa init --dry-run
+rfa init --cursor
+rfa init --claude
+rfa init --copilot
+rfa init --all
+rfa init --index
+rfa init --cwd /absolute/path/to/app --force
 ```
 
 ---
@@ -100,6 +119,7 @@ ready-for-agents init --cwd /absolute/path/to/app --force
 | `--force`      | boolean | `false`         | Ghi đè file existing không có generated marker             |
 | `--cursor`     | boolean | `false`         | Refresh thêm `.cursor/rules/ready-for-agents.mdc`          |
 | `--claude`     | boolean | `false`         | Refresh thêm `CLAUDE.md`                                   |
+| `--copilot`    | boolean | `false`         | Refresh thêm `.github/copilot-instructions.md`             |
 | `--all`        | boolean | `false`         | Refresh toàn bộ file agent tùy chọn                        |
 | `--index`      | boolean | config          | Regenerate `.ready-for-agents/context-tree.json`           |
 | `--cwd <path>` | string  | `process.cwd()` | Thư mục project (resolve absolute)                         |
@@ -144,18 +164,104 @@ Phân loại:
 ### Ví dụ
 
 ```bash
-ready-for-agents update
-ready-for-agents update --dry-run
-ready-for-agents update --check
-ready-for-agents update --check --json
-ready-for-agents update --all
-ready-for-agents update --force
-ready-for-agents update --cwd /absolute/path/to/app
+rfa update
+rfa update --dry-run
+rfa update --check
+rfa update --check --json
+rfa update --all
+rfa update --copilot
+rfa update --force
+rfa update --cwd /absolute/path/to/app
 ```
 
 ---
 
-## 4. Subcommand: `doctor`
+## 4. Subcommand: `diff`
+
+**Mô tả:** So sánh generated context files hiện tại với output mới dựa trên project state. Lệnh này không ghi file.
+
+### Options
+
+| Flag           | Kiểu    | Mặc định        | Mô tả                                          |
+| -------------- | ------- | --------------- | ---------------------------------------------- |
+| `--cwd <path>` | string  | `process.cwd()` | Thư mục project                                |
+| `--json`       | boolean | `false`         | In JSON machine-readable cho CI                |
+| `--cursor`     | boolean | config          | Include `.cursor/rules/ready-for-agents.mdc`   |
+| `--claude`     | boolean | config          | Include `CLAUDE.md`                            |
+| `--copilot`    | boolean | config          | Include `.github/copilot-instructions.md`      |
+| `--all`        | boolean | config          | Include toàn bộ optional agent files           |
+
+### Exit codes
+
+| Code | Điều kiện                                          |
+| ---- | -------------------------------------------------- |
+| `0`  | Tất cả selected generated files đều current        |
+| `1`  | Có file missing / outdated / untracked             |
+| `1`  | `validateInitTarget` lỗi (cwd, package.json)       |
+
+### JSON output
+
+```ts
+type DiffJsonOutput = {
+  cwd: string;
+  ok: boolean;
+  upToDate: OutputFile[];
+  outdated: OutputFile[];
+  missing: OutputFile[];
+  untracked: OutputFile[];
+  diffs: Array<{ file: OutputFile; diff: string }>;
+};
+```
+
+### Ví dụ
+
+```bash
+rfa diff
+rfa diff --json
+rfa diff --all
+rfa diff --cwd /absolute/path/to/app
+```
+
+---
+
+## 5. Subcommand: `ci`
+
+**Mô tả:** Tạo `.github/workflows/ready-for-agents.yml` để GitHub Actions chạy readiness và context freshness checks.
+
+Workflow generated chạy:
+
+```bash
+npx --package ready-for-agents rfa doctor --json --cwd .
+npx --package ready-for-agents rfa diff --json --cwd .
+```
+
+### Options
+
+| Flag           | Kiểu    | Mặc định        | Mô tả                                 |
+| -------------- | ------- | --------------- | ------------------------------------- |
+| `--dry-run`    | boolean | `false`         | Preview workflow; không ghi file      |
+| `--force`      | boolean | `false`         | Ghi đè workflow existing              |
+| `--cwd <path>` | string  | `process.cwd()` | Thư mục project để tạo workflow       |
+
+### Exit codes
+
+| Code | Điều kiện                            |
+| ---- | ------------------------------------ |
+| `0`  | Thành công hoặc skip file existing   |
+| `1`  | `validateCwd` lỗi                    |
+
+### Ví dụ
+
+```bash
+rfa ci
+rfa ci --dry-run
+rfa ci --force
+rfa ci --cwd /absolute/path/to/app
+```
+
+---
+
+## 6. Subcommand: `doctor`
 
 **Mô tả:** Kiểm tra project AI-agent-ready. Mặc định không ghi file; `--fix` có thể tạo/refresh context files an toàn.
 
@@ -170,6 +276,7 @@ ready-for-agents update --cwd /absolute/path/to/app
 | `--force`      | boolean | `false`         | Với `--fix`, overwrite untracked existing files             |
 | `--cursor`     | boolean | `false`         | Với `--fix`, include `.cursor/rules/ready-for-agents.mdc`   |
 | `--claude`     | boolean | `false`         | Với `--fix`, include `CLAUDE.md`                            |
+| `--copilot`    | boolean | `false`         | Với `--fix`, include `.github/copilot-instructions.md`      |
 | `--all`        | boolean | `false`         | Với `--fix`, include toàn bộ optional agent files           |
 | `--index`      | boolean | config          | Với `--fix`, generate `.ready-for-agents/context-tree.json` |
 
@@ -187,7 +294,7 @@ Nếu `.ready-for-agents.json` tồn tại, `doctor --fix` dùng `doctor.fix.*` 
 
 ### Output (stdout)
 
-**Header:** `ready-for-agents doctor`
+**Header:** `rfa doctor`
 
 **Checks:** từng dòng với prefix 2 spaces:
 
@@ -287,18 +394,18 @@ Score: 0/1 · 0 warnings · 1 failure
 ### Ví dụ
 
 ```bash
-ready-for-agents doctor
-ready-for-agents doctor --fix --dry-run
-ready-for-agents doctor --fix
-ready-for-agents doctor --fix --json
-ready-for-agents doctor --fix --index
-ready-for-agents doctor --cwd /Users/you/projects/my-app
-ready-for-agents doctor --json
+rfa doctor
+rfa doctor --fix --dry-run
+rfa doctor --fix
+rfa doctor --fix --json
+rfa doctor --fix --index
+rfa doctor --cwd /Users/you/projects/my-app
+rfa doctor --json
 ```
 
 ---
 
-## 5. Subcommand: `prompt` / `p`
+## 7. Subcommand: `prompt` / `p`
 
 **Mô tả:** Biến instruction thô thành prompt gọn, có cấu trúc, sẵn sàng cho agent — **không gọi AI API** (MVP).
 
@@ -365,16 +472,15 @@ type PromptJsonOutput = {
 ### Ví dụ
 
 ```bash
-ready-for-agents prompt "kiểm tra doctor --json giúp tôi"
-ready-for-agents prompt "kiểm tra doctor --json giúp tôi" --context --compact
-ready-for-agents p "kiểm tra doctor --json giúp tôi"
+rfa prompt "kiểm tra doctor --json giúp tôi"
+rfa prompt "kiểm tra doctor --json giúp tôi" --context --compact
 rfa p "kiểm tra doctor --json giúp tôi"
-ready-for-agents prompt --target en "sửa lỗi doctor --json giúp tôi"
-ready-for-agents prompt --target vi "Explain what prompt does"
-ready-for-agents prompt --stdin
-echo "review api" | ready-for-agents prompt --stdin --json
-ready-for-agents prompt --stats "fix login bug và chạy test"
-ready-for-agents prompt --cwd /absolute/path/to/app "Explain this task"
+rfa prompt --target en "sửa lỗi doctor --json giúp tôi"
+rfa prompt --target vi "Explain what prompt does"
+rfa prompt --stdin
+echo "review api" | rfa prompt --stdin --json
+rfa prompt --stats "fix login bug và chạy test"
+rfa prompt --cwd /absolute/path/to/app "Explain this task"
 ```
 
 `--target` là rule-based: flag này chỉ điều khiển instruction ngôn ngữ trong output, không gọi model dịch.
@@ -383,7 +489,7 @@ Chi tiết pipeline: [PROMPT_SPEC.md](./PROMPT_SPEC.md).
 
 ---
 
-## 6. Subcommand: `config init`
+## 8. Subcommand: `config init`
 
 **Mô tả:** Tạo file config project `.ready-for-agents.json`.
 
@@ -403,6 +509,7 @@ type ReadyForAgentsConfig = {
   files?: {
     cursor?: boolean;
     claude?: boolean;
+    copilot?: boolean;
     all?: boolean;
     index?: boolean;
   };
@@ -410,6 +517,7 @@ type ReadyForAgentsConfig = {
     fix?: {
       cursor?: boolean;
       claude?: boolean;
+      copilot?: boolean;
       all?: boolean;
       force?: boolean;
       index?: boolean;
@@ -431,15 +539,15 @@ Tên legacy `.agent-context-kit.json` vẫn được đọc để tương thích
 ### Ví dụ
 
 ```bash
-ready-for-agents config init
-ready-for-agents config init --dry-run
-ready-for-agents config init --force
-ready-for-agents config init --cwd /absolute/path/to/app
+rfa config init
+rfa config init --dry-run
+rfa config init --force
+rfa config init --cwd /absolute/path/to/app
 ```
 
 ---
 
-## 7. Subcommand: `index`
+## 9. Subcommand: `index`
 
 **Mô tả:** Build context tree cache cho generated agent files.
 
@@ -469,16 +577,16 @@ type IndexJsonOutput = {
 ### Ví dụ
 
 ```bash
-ready-for-agents index
-ready-for-agents index --dry-run
-ready-for-agents index --json
-ready-for-agents index --output .cache/agent-context-tree.json
-ready-for-agents index --cwd /absolute/path/to/app
+rfa index
+rfa index --dry-run
+rfa index --json
+rfa index --output .cache/agent-context-tree.json
+rfa index --cwd /absolute/path/to/app
 ```
 
 ---
 
-## 8. Subcommand: `query`
+## 10. Subcommand: `query`
 
 **Mô tả:** Chọn các section context liên quan nhất cho một task, dựa trên `.ready-for-agents/context-tree.json` khi có hoặc scan live các generated context files hiện tại.
 
@@ -517,32 +625,34 @@ type QueryJsonOutput =
 ### Ví dụ
 
 ```bash
-ready-for-agents query "how should I verify this change?"
-ready-for-agents query "kiểm tra doctor hoạt động đúng chưa" --limit 4
-ready-for-agents query "show stack and dependencies" --json
-ready-for-agents query "fix build" --cwd /absolute/path/to/app
+rfa query "how should I verify this change?"
+rfa query "kiểm tra doctor hoạt động đúng chưa" --limit 4
+rfa query "show stack and dependencies" --json
+rfa query "fix build" --cwd /absolute/path/to/app
 ```
 
 ---
 
-## 9. Quy ước `--cwd`
+## 11. Quy ước `--cwd`
 
 | Đúng                          | Sai                                      |
 | ----------------------------- | ---------------------------------------- |
 | `/Users/you/app`              | `cd/Users/you/app`                       |
 | `./my-app` (resolve relative) | path không tồn tại (doctor/init báo lỗi) |
 
-`path.resolve()` được gọi trong `runInit` / `runUpdate` / `runDoctor` / `runIndex` / `runQuery` / `runConfigInit`.
+`path.resolve()` được gọi trong `runInit` / `runUpdate` / `runDiff` / `runDoctor` / `runCi` / `runIndex` / `runQuery` / `runConfigInit`.
 
 ---
 
-## 10. Chạy trong development
+## 12. Chạy trong development
 
 | Lệnh                          | Tương đương                         |
 | ----------------------------- | ----------------------------------- |
 | `pnpm dev init [opts]`        | `tsx src/cli.ts init [opts]`        |
 | `pnpm start init [opts]`      | `node dist/cli.js init [opts]`      |
 | `pnpm dev update [opts]`      | `tsx src/cli.ts update [opts]`      |
+| `pnpm dev diff [opts]`        | `tsx src/cli.ts diff [opts]`        |
+| `pnpm dev ci [opts]`          | `tsx src/cli.ts ci [opts]`          |
 | `pnpm dev doctor [opts]`      | `tsx src/cli.ts doctor [opts]`      |
 | `pnpm dev prompt [opts]`      | `tsx src/cli.ts prompt [opts]`      |
 | `pnpm dev index [opts]`       | `tsx src/cli.ts index [opts]`       |
@@ -553,7 +663,7 @@ ready-for-agents query "fix build" --cwd /absolute/path/to/app
 
 ---
 
-## 11. Programmatic API
+## 13. Programmatic API
 
 Import từ package (xem [DATA_MODEL.md](./DATA_MODEL.md)):
 

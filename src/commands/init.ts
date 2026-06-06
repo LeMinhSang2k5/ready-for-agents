@@ -35,6 +35,7 @@ export type InitOptions = {
   cwd?: string;
   cursor?: boolean;
   claude?: boolean;
+  copilot?: boolean;
   all?: boolean;
   index?: boolean;
 };
@@ -130,7 +131,7 @@ function printResultLines(
 }
 
 function printHeader(): void {
-  console.log(pc.bold("ready-for-agents"));
+  console.log(pc.bold("rfa init"));
   console.log();
 }
 
